@@ -108,6 +108,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CsvExport.cs" />
     <Compile Include="TfsTSForm.cs">
       <SubType>Form</SubType>
     </Compile>
