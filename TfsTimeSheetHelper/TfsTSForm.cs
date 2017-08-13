@@ -17,6 +17,7 @@ namespace TfsTimeSheetHelper
         {
             InitializeComponent();
             buildEmptyCollection();
+            initSettings();
         }
 
         private void btnGenCSV_Click(object sender, EventArgs e)
@@ -83,6 +84,18 @@ namespace TfsTimeSheetHelper
             saveSettings();
         }
 
+        public void initSettings()
+        {
+            try
+            {
+                TfsURIBox.Text = Properties.Settings.Default.tfsURL;
+                UserNameBox.Text = Properties.Settings.Default.userName;
+            }
+            catch (System.Configuration.SettingsPropertyNotFoundException)
+            {
+                TfsURIBox.Text = "http://sefoxdev136:8080/tfs/SE_FOX/SD";
+            }
+        }
 
         public void saveSettings()
         {
