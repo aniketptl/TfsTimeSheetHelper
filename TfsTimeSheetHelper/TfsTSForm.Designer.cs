@@ -28,9 +28,9 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.textBox1 = new System.Windows.Forms.TextBox();
-            this.textBox2 = new System.Windows.Forms.TextBox();
-            this.textBox3 = new System.Windows.Forms.TextBox();
+            this.UserNameBox = new System.Windows.Forms.TextBox();
+            this.PasswordBox = new System.Windows.Forms.TextBox();
+            this.TfsURIBox = new System.Windows.Forms.TextBox();
             this.btnGenCSV = new System.Windows.Forms.Button();
             this.btnSaveSettings = new System.Windows.Forms.Button();
             this.lblUsername = new System.Windows.Forms.Label();
@@ -38,26 +38,26 @@
             this.lblTFSUrl = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
-            // textBox1
+            // UserNameBox
             // 
-            this.textBox1.Location = new System.Drawing.Point(12, 41);
-            this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(521, 22);
-            this.textBox1.TabIndex = 0;
+            this.UserNameBox.Location = new System.Drawing.Point(12, 41);
+            this.UserNameBox.Name = "UserNameBox";
+            this.UserNameBox.Size = new System.Drawing.Size(521, 22);
+            this.UserNameBox.TabIndex = 0;
             // 
-            // textBox2
+            // PasswordBox
             // 
-            this.textBox2.Location = new System.Drawing.Point(12, 104);
-            this.textBox2.Name = "textBox2";
-            this.textBox2.Size = new System.Drawing.Size(521, 22);
-            this.textBox2.TabIndex = 1;
+            this.PasswordBox.Location = new System.Drawing.Point(12, 104);
+            this.PasswordBox.Name = "PasswordBox";
+            this.PasswordBox.Size = new System.Drawing.Size(521, 22);
+            this.PasswordBox.TabIndex = 1;
             // 
-            // textBox3
+            // TfsURIBox
             // 
-            this.textBox3.Location = new System.Drawing.Point(12, 156);
-            this.textBox3.Name = "textBox3";
-            this.textBox3.Size = new System.Drawing.Size(521, 22);
-            this.textBox3.TabIndex = 2;
+            this.TfsURIBox.Location = new System.Drawing.Point(12, 156);
+            this.TfsURIBox.Name = "TfsURIBox";
+            this.TfsURIBox.Size = new System.Drawing.Size(521, 22);
+            this.TfsURIBox.TabIndex = 2;
             // 
             // btnGenCSV
             // 
@@ -67,6 +67,7 @@
             this.btnGenCSV.TabIndex = 3;
             this.btnGenCSV.Text = "Generate CSV";
             this.btnGenCSV.UseVisualStyleBackColor = true;
+            this.btnGenCSV.Click += new System.EventHandler(this.btnGenCSV_Click);
             // 
             // btnSaveSettings
             // 
@@ -85,7 +86,6 @@
             this.lblUsername.Size = new System.Drawing.Size(111, 17);
             this.lblUsername.TabIndex = 5;
             this.lblUsername.Text = "Enter Username";
-            this.lblUsername.Click += new System.EventHandler(this.label1_Click);
             // 
             // lblPassword
             // 
@@ -115,9 +115,9 @@
             this.Controls.Add(this.lblUsername);
             this.Controls.Add(this.btnSaveSettings);
             this.Controls.Add(this.btnGenCSV);
-            this.Controls.Add(this.textBox3);
-            this.Controls.Add(this.textBox2);
-            this.Controls.Add(this.textBox1);
+            this.Controls.Add(this.TfsURIBox);
+            this.Controls.Add(this.PasswordBox);
+            this.Controls.Add(this.UserNameBox);
             this.Name = "TfsTimeSheetForm";
             this.Text = "TFS Time Sheet Helper";
             this.ResumeLayout(false);
@@ -127,9 +127,9 @@
 
         #endregion
 
-        private System.Windows.Forms.TextBox textBox1;
-        private System.Windows.Forms.TextBox textBox2;
-        private System.Windows.Forms.TextBox textBox3;
+        private System.Windows.Forms.TextBox UserNameBox;
+        private System.Windows.Forms.TextBox PasswordBox;
+        private System.Windows.Forms.TextBox TfsURIBox;
         private System.Windows.Forms.Button btnGenCSV;
         private System.Windows.Forms.Button btnSaveSettings;
         private System.Windows.Forms.Label lblUsername;
