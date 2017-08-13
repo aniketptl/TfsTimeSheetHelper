@@ -3,17 +3,52 @@ using Microsoft.TeamFoundation.Client;
 using Microsoft.TeamFoundation.WorkItemTracking.Client;
 using System.Net;
 using System.Text;
+using System.Collections.Generic;
 using System;
 
 namespace TfsTimeSheetHelper
 {
     public partial class TfsTimeSheetForm : Form
     {
+        Dictionary<String, List<String>> dayDefectTemplate = new Dictionary<String, List<String>>();
         StringBuilder csvExport = new StringBuilder();
 
         public TfsTimeSheetForm()
         {
             InitializeComponent();
+            buildEmptyCollection();
+        }
+
+        private void btnGenCSV_Click(object sender, EventArgs e)
+        {
+            NetworkCredential credential = new NetworkCredential(UserNameBox.Text, PasswordBox.Text);
+            TfsTeamProjectCollection tpc = new TfsTeamProjectCollection(new Uri(TfsURIBox.Text), credential);
+            tpc.EnsureAuthenticated();
+
+            WorkItemStore workItemStore = (WorkItemStore)tpc.GetService(typeof(WorkItemStore));
+
+            WorkItemCollection queryResults = workItemStore.Query("Select [State], [Title] " +
+                                                                    "From WorkItems " +
+                                                                    "Where [Resolved by] = @Me AND [Resolved Date]> @Today-6 " +
+                                                                    "Order By [Resolved Date] Asc");
+
+            addCSVPre();
+
+            //Logic Goes Here
+
+            addCSVPost();
+
+        }
+
+
+        public void buildEmptyCollection()
+        {
+            dayDefectTemplate.Add("Monday", null);
+            dayDefectTemplate.Add("Tuesday", null);
+            dayDefectTemplate.Add("Wednesday", null);
+            dayDefectTemplate.Add("Thursday", null);
+            dayDefectTemplate.Add("Friay", null);
+
         }
 
         public void addCSVPre()
@@ -41,20 +76,6 @@ namespace TfsTimeSheetHelper
             csvExport.AppendLine("2121472,,,,,,,,,,,,,,,,,");
             csvExport.AppendLine("A|APPROVAL|Attribute10|DI|CommentText|,,,,,,,,,,,,,,,,,");
             csvExport.AppendLine("STOP_ORACLE,END");
-        }
-
-        private void btnGenCSV_Click(object sender, EventArgs e)
-        {
-            NetworkCredential credential = new NetworkCredential(UserNameBox.Text, PasswordBox.Text);
-            TfsTeamProjectCollection tpc = new TfsTeamProjectCollection(new Uri(TfsURIBox.Text), credential);
-            tpc.EnsureAuthenticated();
-
-            WorkItemStore workItemStore = (WorkItemStore)tpc.GetService(typeof(WorkItemStore));
-
-            WorkItemCollection queryResults = workItemStore.Query("Select [State], [Title] " +
-                                                                    "From WorkItems " +
-                                                                    "Where [Resolved by] = @Me AND [Resolved Date]> @Today-6 " +
-                                                                    "Order By [Resolved Date] Asc");
         }
     }
 }
