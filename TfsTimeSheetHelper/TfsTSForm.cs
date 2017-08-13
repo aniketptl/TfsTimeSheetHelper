@@ -3,6 +3,7 @@ using Microsoft.TeamFoundation.Client;
 using Microsoft.TeamFoundation.WorkItemTracking.Client;
 using System.Net;
 using System.Text;
+using System.IO;
 using System.Collections.Generic;
 using System;
 
@@ -96,7 +97,7 @@ namespace TfsTimeSheetHelper
             }
 
             addCSVPost();
-
+            exportFile();
         }
 
         public void addPrefix(int intDayWeek)
@@ -120,6 +121,17 @@ namespace TfsTimeSheetHelper
                     csvExport.Append(emptyPattern);
                 }
             }
+        }
+
+        public void exportFile()
+        {
+            String desktopPath = Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + "\\FoxTimeSheet.csv";
+
+            System.IO.File.Delete(desktopPath);
+
+            File.AppendAllText(desktopPath, csvExport.ToString());
+
+            MessageBox.Show("File Written to Desktop", "FoxTimeSheet Exception Handling", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
 
