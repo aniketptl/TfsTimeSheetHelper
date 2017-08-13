@@ -11,7 +11,13 @@ namespace TfsTimeSheetHelper
     public partial class TfsTimeSheetForm : Form
     {
         Dictionary<String, List<String>> dayDefectTemplate = new Dictionary<String, List<String>>();
+        List<String> defectList = new List<string>();
+
+        String day, emptyPattern = ",,", emptylast = ",";
         StringBuilder csvExport = new StringBuilder();
+
+        DateTime date;
+        int hour;
 
         public TfsTimeSheetForm()
         {
@@ -22,23 +28,98 @@ namespace TfsTimeSheetHelper
 
         private void btnGenCSV_Click(object sender, EventArgs e)
         {
-            NetworkCredential credential = new NetworkCredential(UserNameBox.Text, PasswordBox.Text);
-            TfsTeamProjectCollection tpc = new TfsTeamProjectCollection(new Uri(TfsURIBox.Text), credential);
-            tpc.EnsureAuthenticated();
+            try
+            {
+                NetworkCredential credential = new NetworkCredential(UserNameBox.Text, PasswordBox.Text);
+                TfsTeamProjectCollection tpc = new TfsTeamProjectCollection(new Uri(TfsURIBox.Text), credential);
+                tpc.EnsureAuthenticated();
 
-            WorkItemStore workItemStore = (WorkItemStore)tpc.GetService(typeof(WorkItemStore));
+                WorkItemStore workItemStore = (WorkItemStore)tpc.GetService(typeof(WorkItemStore));
 
-            WorkItemCollection queryResults = workItemStore.Query("Select [State], [Title] " +
-                                                                    "From WorkItems " +
-                                                                    "Where [Resolved by] = @Me AND [Resolved Date]> @Today-6 " +
-                                                                    "Order By [Resolved Date] Asc");
+                WorkItemCollection queryResults = workItemStore.Query("Select [State], [Title] " +
+                                                                        "From WorkItems " +
+                                                                        "Where [Resolved by] = @Me AND [Resolved Date]> @Today-6 " +
+                                                                        "Order By [Resolved Date] Asc");
 
-            addCSVPre();
+                addCSVPre();
 
-            //Logic Goes Here
+                foreach (WorkItem item in queryResults)
+                {
+                    date = Convert.ToDateTime(item["Resolved Date"]);
+                    day = date.DayOfWeek.ToString();
+
+                    int intDayWeek = (int)date.DayOfWeek;
+
+                    if (dayDefectTemplate.ContainsKey(date.DayOfWeek.ToString()) && dayDefectTemplate[day] != null)
+                    {
+                        defectList = dayDefectTemplate[day];
+                        defectList.Add(item.Id.ToString());
+
+                        dayDefectTemplate[day] = defectList;
+
+                    }
+                    else
+                    {
+                        defectList = new List<string>();
+                        defectList.Add(item.Id.ToString());
+
+                        dayDefectTemplate[day] = defectList;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Please makesure URL/Username/Password is correct", "FoxTimeSheet Exception Handling", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                MessageBox.Show(ex.ToString(), "FoxTimeSheet Exception Handling for Dev", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            foreach (KeyValuePair<String, List<String>> resItem in dayDefectTemplate)
+            {
+                defectList = resItem.Value;
+
+                if (defectList != null)
+                {
+                    foreach (String defectNumber in defectList)
+                    {
+                        csvExport.Append("187117,01.10,Normal -IN,");
+
+                        hour = 8;
+                        hour = hour / defectList.Count;
+
+                        addPrefix((int)Enum.Parse(typeof(DayOfWeek), resItem.Key, true));
+                        csvExport.Append(hour.ToString() + "," + defectNumber + ",");
+                        addSuffix((int)Enum.Parse(typeof(DayOfWeek), resItem.Key, true));
+                        csvExport.Append(Environment.NewLine);
+                    }
+                }
+            }
 
             addCSVPost();
 
+        }
+
+        public void addPrefix(int intDayWeek)
+        {
+            for (int i = 1; i < intDayWeek; i++)
+            {
+                csvExport.Append(emptyPattern);
+            }
+        }
+
+        public void addSuffix(int intDayWeek)
+        {
+            for (int i = intDayWeek; i < 5; i++)
+            {
+                if (i == 4)
+                {
+                    csvExport.Append(emptylast);
+                }
+                else
+                {
+                    csvExport.Append(emptyPattern);
+                }
+            }
         }
 
 
@@ -93,7 +174,7 @@ namespace TfsTimeSheetHelper
             }
             catch (System.Configuration.SettingsPropertyNotFoundException)
             {
-                TfsURIBox.Text = "http://sefoxdev136:8080/tfs/SE_FOX/SD";
+                TfsURIBox.Text = "http://sefoxdev136:8080/tfs/SE_FOX/";
             }
         }
 

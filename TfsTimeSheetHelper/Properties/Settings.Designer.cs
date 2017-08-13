@@ -37,7 +37,7 @@ namespace TfsTimeSheetHelper.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        [global::System.Configuration.DefaultSettingValueAttribute("http://sefoxdev136:8080/tfs/SE_FOX/")]
         public string tfsURL {
             get {
                 return ((string)(this["tfsURL"]));

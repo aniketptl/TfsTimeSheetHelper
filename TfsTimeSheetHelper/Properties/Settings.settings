@@ -6,7 +6,7 @@
       <Value Profile="(Default)" />
     </Setting>
     <Setting Name="tfsURL" Type="System.String" Scope="User">
-      <Value Profile="(Default)" />
+      <Value Profile="(Default)">http://sefoxdev136:8080/tfs/SE_FOX/</Value>
     </Setting>
   </Settings>
 </SettingsFile>
