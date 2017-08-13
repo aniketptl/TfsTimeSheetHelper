@@ -77,5 +77,18 @@ namespace TfsTimeSheetHelper
             csvExport.AppendLine("A|APPROVAL|Attribute10|DI|CommentText|,,,,,,,,,,,,,,,,,");
             csvExport.AppendLine("STOP_ORACLE,END");
         }
+
+        private void btnSaveSettings_Click(object sender, EventArgs e)
+        {
+            saveSettings();
+        }
+
+
+        public void saveSettings()
+        {
+            Properties.Settings.Default.userName = UserNameBox.Text;
+            Properties.Settings.Default.tfsURL = TfsURIBox.Text;
+            Properties.Settings.Default.Save();
+        }
     }
 }

@@ -77,6 +77,7 @@
             this.btnSaveSettings.TabIndex = 4;
             this.btnSaveSettings.Text = "Save Settings";
             this.btnSaveSettings.UseVisualStyleBackColor = true;
+            this.btnSaveSettings.Click += new System.EventHandler(this.btnSaveSettings_Click);
             // 
             // lblUsername
             // 
