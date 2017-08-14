@@ -18,7 +18,12 @@ namespace TfsTimeSheetHelper
         StringBuilder csvExport = new StringBuilder();
 
         DateTime date;
-        int hour;
+        int      hour;
+
+        String defectQuery = "Select[State], [Title] " +
+                             "From WorkItems " +
+                             "Where [Resolved by] = @Me AND [Resolved Date]> @Today-6 " +
+                             "Order By [Resolved Date] Asc";
 
         public TfsTimeSheetForm()
         {
@@ -35,12 +40,8 @@ namespace TfsTimeSheetHelper
                 TfsTeamProjectCollection tpc = new TfsTeamProjectCollection(new Uri(TfsURIBox.Text), credential);
                 tpc.EnsureAuthenticated();
 
-                WorkItemStore workItemStore = (WorkItemStore)tpc.GetService(typeof(WorkItemStore));
-
-                WorkItemCollection queryResults = workItemStore.Query("Select [State], [Title] " +
-                                                                        "From WorkItems " +
-                                                                        "Where [Resolved by] = @Me AND [Resolved Date]> @Today-6 " +
-                                                                        "Order By [Resolved Date] Asc");
+                WorkItemStore     workItemStore = (WorkItemStore)tpc.GetService(typeof(WorkItemStore));
+                WorkItemCollection queryResults = workItemStore.Query(defectQuery);
 
                 addCSVPre();
 
