@@ -11,18 +11,17 @@ namespace TfsTimeSheetHelper
 {
     public partial class TfsTimeSheetForm : Form
     {
-        Dictionary<String, List<String>> dayDefectTemplate = new Dictionary<String, List<String>>();
-        List<String> defectList = new List<string>();
+        Dictionary<String, Dictionary<String, float>> dayDefectTemplate = new Dictionary<String, Dictionary<String, float>>();
+        Dictionary<String, float> defectHour = new Dictionary<string, float>();
 
         String day, emptyPattern = ",,", emptylast = ",";
-        StringBuilder csvExport = new StringBuilder();
+        StringBuilder csvExport  = new StringBuilder();
 
         DateTime date;
-        int      hour;
 
         String defectQuery = "Select[State], [Title] " +
                              "From WorkItems " +
-                             "Where [Resolved by] = @Me AND [Resolved Date]> @Today-6 " +
+                             "Where [Resolved by] = @Me AND [Resolved Date]> @Today-15 " +
                              "Order By [Resolved Date] Asc";
 
         public TfsTimeSheetForm()
@@ -38,6 +37,7 @@ namespace TfsTimeSheetHelper
             {
                 NetworkCredential credential = new NetworkCredential(UserNameBox.Text, PasswordBox.Text);
                 TfsTeamProjectCollection tpc = new TfsTeamProjectCollection(new Uri(TfsURIBox.Text), credential);
+
                 tpc.EnsureAuthenticated();
 
                 WorkItemStore     workItemStore = (WorkItemStore)tpc.GetService(typeof(WorkItemStore));
@@ -54,45 +54,76 @@ namespace TfsTimeSheetHelper
 
                     if (dayDefectTemplate.ContainsKey(date.DayOfWeek.ToString()) && dayDefectTemplate[day] != null)
                     {
-                        defectList = dayDefectTemplate[day];
-                        defectList.Add(item.Id.ToString());
+                        defectHour = dayDefectTemplate[day];
+                        defectHour.Add(item.Id.ToString(), (float) item["Development Estimate"]);
 
-                        dayDefectTemplate[day] = defectList;
-
+                        dayDefectTemplate[day] = defectHour;
                     }
                     else
                     {
-                        defectList = new List<string>();
-                        defectList.Add(item.Id.ToString());
-
-                        dayDefectTemplate[day] = defectList;
+                        defectHour = new Dictionary<string, float>();
+                        defectHour.Add(item.Id.ToString(), (float)item["Development Estimate"]);
+                        dayDefectTemplate[day] = defectHour;
                     }
                 }
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Please makesure URL/Username/Password is correct", "FoxTimeSheet Exception Handling", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-                MessageBox.Show(ex.ToString(), "FoxTimeSheet Exception Handling for Dev", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("Please makesure URL/Username/Password is correct", "Fox TimeSheet Exception Handling", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                MessageBox.Show(ex.ToString(), "Fox TimeSheet Exception Handling for Dev", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
 
-            foreach (KeyValuePair<String, List<String>> resItem in dayDefectTemplate)
+            foreach (KeyValuePair<String, Dictionary<string, float>> resItem in dayDefectTemplate)
             {
-                defectList = resItem.Value;
+                defectHour = resItem.Value;
 
-                if (defectList != null)
+                if (defectHour != null)
                 {
-                    foreach (String defectNumber in defectList)
+                    foreach (KeyValuePair<String,float> defectHourList in defectHour)
                     {
                         csvExport.Append("187117,01.10,Normal -IN,");
 
-                        hour = 8;
-                        hour = hour / defectList.Count;
+                        String defectNumber = defectHourList.Key.ToString();
+                        float  hour = 8;
 
-                        addPrefix((int)Enum.Parse(typeof(DayOfWeek), resItem.Key, true));
-                        csvExport.Append(hour.ToString() + "," + defectNumber + ",");
-                        addSuffix((int)Enum.Parse(typeof(DayOfWeek), resItem.Key, true));
-                        csvExport.Append(Environment.NewLine);
+                        if (chkBoxDeveloperEst.Checked)
+                        {
+                            if (defectHourList.Value.ToString() == null)
+                            {
+                                hour = hour / defectHour.Count;
+
+                                addPrefix((int)Enum.Parse(typeof(DayOfWeek), resItem.Key, true));
+                                csvExport.Append(hour.ToString() + "," + defectNumber + ",");
+                                addSuffix((int)Enum.Parse(typeof(DayOfWeek), resItem.Key, true));
+                                csvExport.Append(Environment.NewLine);
+                            }
+                            else
+                            {
+                                hour = (float) defectHourList.Value;
+
+                                int hoursDivided = (int)(hour / 8);
+
+                                addPrefix((int)Enum.Parse(typeof(DayOfWeek), resItem.Key, true));
+
+                                for(int i = 0; i < hoursDivided; i++)
+                                {
+                                    csvExport.Append(hoursDivided.ToString() + "," + defectNumber + ",");
+                                }
+
+                                addSuffix((int)Enum.Parse(typeof(DayOfWeek), resItem.Key, true));
+                                csvExport.Append(Environment.NewLine);
+                            }
+                        }
+                        else
+                        {
+                            hour = hour / defectHour.Count;
+
+                            addPrefix((int)Enum.Parse(typeof(DayOfWeek), resItem.Key, true));
+                            csvExport.Append(hour.ToString() + "," + defectNumber + ",");
+                            addSuffix((int)Enum.Parse(typeof(DayOfWeek), resItem.Key, true));
+                            csvExport.Append(Environment.NewLine);
+                        }
                     }
                 }
             }
@@ -126,13 +157,12 @@ namespace TfsTimeSheetHelper
 
         public void exportFile()
         {
-            String desktopPath = Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + "\\FoxTimeSheet.csv";
+            String desktopPath = Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + "\\TfsTimeSheet.csv";
 
-            System.IO.File.Delete(desktopPath);
-
+            File.Delete(desktopPath);
             File.AppendAllText(desktopPath, csvExport.ToString());
 
-            MessageBox.Show("File Written to Desktop", "FoxTimeSheet Exception Handling", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            MessageBox.Show("File Written to Desktop", "TFS TimeSheet Helper", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
 
@@ -176,6 +206,11 @@ namespace TfsTimeSheetHelper
         private void btnSaveSettings_Click(object sender, EventArgs e)
         {
             saveSettings();
+        }
+
+        private void chkBoxDeveloperEst_CheckedChanged(object sender, EventArgs e)
+        {
+
         }
 
         public void initSettings()
