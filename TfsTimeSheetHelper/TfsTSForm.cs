@@ -21,7 +21,7 @@ namespace TfsTimeSheetHelper
 
         String defectQuery = "Select[State], [Title] " +
                              "From WorkItems " +
-                             "Where [Resolved by] = @Me AND [Resolved Date]> @Today-15 " +
+                             "Where [Resolved by] = @Me AND [Resolved Date]> @Today-6 " +
                              "Order By [Resolved Date] Asc";
 
         public TfsTimeSheetForm()
