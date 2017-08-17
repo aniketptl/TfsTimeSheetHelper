@@ -51,6 +51,7 @@
             // 
             this.PasswordBox.Location = new System.Drawing.Point(12, 102);
             this.PasswordBox.Name = "PasswordBox";
+            this.PasswordBox.PasswordChar = '*';
             this.PasswordBox.Size = new System.Drawing.Size(521, 22);
             this.PasswordBox.TabIndex = 1;
             // 
@@ -117,7 +118,6 @@
             this.chkBoxDeveloperEst.TabIndex = 9;
             this.chkBoxDeveloperEst.Text = "Developer Estimate";
             this.chkBoxDeveloperEst.UseVisualStyleBackColor = true;
-            
             // 
             // TfsTimeSheetForm
             // 
