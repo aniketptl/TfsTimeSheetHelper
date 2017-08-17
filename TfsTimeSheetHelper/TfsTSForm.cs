@@ -21,7 +21,7 @@ namespace TfsTimeSheetHelper
 
         String defectQuery = "Select[State], [Title] " +
                              "From WorkItems " +
-                             "Where [Resolved by] = @Me AND [Resolved Date]> @Today-6 " +
+                             "Where [Resolved by] = @Me AND [Resolved Date]> @Today-15 " +
                              "Order By [Resolved Date] Asc";
 
         public TfsTimeSheetForm()
@@ -51,18 +51,24 @@ namespace TfsTimeSheetHelper
                     day = date.DayOfWeek.ToString();
 
                     int intDayWeek = (int)date.DayOfWeek;
+                    float estimated = 0 ;
+
+                    if (item["Development Estimate"] != null)
+                    {
+                        estimated = (float) Convert.ToDecimal(item["Development Estimate"]);
+                    }
 
                     if (dayDefectTemplate.ContainsKey(date.DayOfWeek.ToString()) && dayDefectTemplate[day] != null)
                     {
                         defectHour = dayDefectTemplate[day];
-                        defectHour.Add(item.Id.ToString(), (float) item["Development Estimate"]);
+                        defectHour.Add(item.Id.ToString(), estimated);
 
                         dayDefectTemplate[day] = defectHour;
                     }
                     else
                     {
                         defectHour = new Dictionary<string, float>();
-                        defectHour.Add(item.Id.ToString(), (float)item["Development Estimate"]);
+                        defectHour.Add(item.Id.ToString(), estimated);
                         dayDefectTemplate[day] = defectHour;
                     }
                 }
@@ -89,7 +95,7 @@ namespace TfsTimeSheetHelper
 
                         if (chkBoxDeveloperEst.Checked)
                         {
-                            if (defectHourList.Value.ToString() == null)
+                            if (defectHourList.Value == 0)
                             {
                                 hour = hour / defectHour.Count;
 
@@ -102,13 +108,15 @@ namespace TfsTimeSheetHelper
                             {
                                 hour = (float) defectHourList.Value;
 
-                                int hoursDivided = (int)(hour / 8);
+                                int daysDivide = (int)(hour/8);
+
+                                hour = hour / daysDivide;
 
                                 addPrefix((int)Enum.Parse(typeof(DayOfWeek), resItem.Key, true));
 
-                                for(int i = 0; i < hoursDivided; i++)
+                                for(int i = 0; i < daysDivide; i++)
                                 {
-                                    csvExport.Append(hoursDivided.ToString() + "," + defectNumber + ",");
+                                    csvExport.Append(hour.ToString() + "," + defectNumber + ",");
                                 }
 
                                 addSuffix((int)Enum.Parse(typeof(DayOfWeek), resItem.Key, true));
@@ -206,11 +214,6 @@ namespace TfsTimeSheetHelper
         private void btnSaveSettings_Click(object sender, EventArgs e)
         {
             saveSettings();
-        }
-
-        private void chkBoxDeveloperEst_CheckedChanged(object sender, EventArgs e)
-        {
-
         }
 
         public void initSettings()

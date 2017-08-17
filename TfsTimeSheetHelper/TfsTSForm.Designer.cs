@@ -46,7 +46,6 @@
             this.UserNameBox.Name = "UserNameBox";
             this.UserNameBox.Size = new System.Drawing.Size(521, 22);
             this.UserNameBox.TabIndex = 0;
-            this.UserNameBox.UseWaitCursor = true;
             // 
             // PasswordBox
             // 
@@ -54,7 +53,6 @@
             this.PasswordBox.Name = "PasswordBox";
             this.PasswordBox.Size = new System.Drawing.Size(521, 22);
             this.PasswordBox.TabIndex = 1;
-            this.PasswordBox.UseWaitCursor = true;
             // 
             // TfsURIBox
             // 
@@ -62,7 +60,6 @@
             this.TfsURIBox.Name = "TfsURIBox";
             this.TfsURIBox.Size = new System.Drawing.Size(521, 22);
             this.TfsURIBox.TabIndex = 2;
-            this.TfsURIBox.UseWaitCursor = true;
             // 
             // btnGenCSV
             // 
@@ -72,7 +69,6 @@
             this.btnGenCSV.TabIndex = 3;
             this.btnGenCSV.Text = "Generate CSV";
             this.btnGenCSV.UseVisualStyleBackColor = true;
-            this.btnGenCSV.UseWaitCursor = true;
             this.btnGenCSV.Click += new System.EventHandler(this.btnGenCSV_Click);
             // 
             // btnSaveSettings
@@ -83,7 +79,6 @@
             this.btnSaveSettings.TabIndex = 4;
             this.btnSaveSettings.Text = "Save Settings";
             this.btnSaveSettings.UseVisualStyleBackColor = true;
-            this.btnSaveSettings.UseWaitCursor = true;
             this.btnSaveSettings.Click += new System.EventHandler(this.btnSaveSettings_Click);
             // 
             // lblUsername
@@ -94,7 +89,6 @@
             this.lblUsername.Size = new System.Drawing.Size(111, 17);
             this.lblUsername.TabIndex = 5;
             this.lblUsername.Text = "Enter Username";
-            this.lblUsername.UseWaitCursor = true;
             // 
             // lblPassword
             // 
@@ -104,7 +98,6 @@
             this.lblPassword.Size = new System.Drawing.Size(107, 17);
             this.lblPassword.TabIndex = 6;
             this.lblPassword.Text = "Enter Password";
-            this.lblPassword.UseWaitCursor = true;
             // 
             // lblTFSUrl
             // 
@@ -114,25 +107,25 @@
             this.lblTFSUrl.Size = new System.Drawing.Size(66, 17);
             this.lblTFSUrl.TabIndex = 7;
             this.lblTFSUrl.Text = "TFS URL";
-            this.lblTFSUrl.UseWaitCursor = true;
             // 
             // chkBoxDeveloperEst
             // 
             this.chkBoxDeveloperEst.AutoSize = true;
-            this.chkBoxDeveloperEst.Location = new System.Drawing.Point(15, 198);
+            this.chkBoxDeveloperEst.Location = new System.Drawing.Point(12, 195);
             this.chkBoxDeveloperEst.Name = "chkBoxDeveloperEst";
             this.chkBoxDeveloperEst.Size = new System.Drawing.Size(153, 21);
             this.chkBoxDeveloperEst.TabIndex = 9;
             this.chkBoxDeveloperEst.Text = "Developer Estimate";
             this.chkBoxDeveloperEst.UseVisualStyleBackColor = true;
-            this.chkBoxDeveloperEst.CheckedChanged += new System.EventHandler(this.chkBoxDeveloperEst_CheckedChanged);
+            
             // 
             // TfsTimeSheetForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.AutoSize = true;
             this.BackColor = System.Drawing.SystemColors.Control;
-            this.ClientSize = new System.Drawing.Size(555, 293);
+            this.ClientSize = new System.Drawing.Size(546, 292);
             this.Controls.Add(this.chkBoxDeveloperEst);
             this.Controls.Add(this.lblTFSUrl);
             this.Controls.Add(this.lblPassword);
@@ -142,12 +135,12 @@
             this.Controls.Add(this.TfsURIBox);
             this.Controls.Add(this.PasswordBox);
             this.Controls.Add(this.UserNameBox);
+            this.Cursor = System.Windows.Forms.Cursors.Arrow;
             this.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "TfsTimeSheetForm";
             this.Text = "TFS Time Sheet Helper";
-            this.UseWaitCursor = true;
             this.ResumeLayout(false);
             this.PerformLayout();
 
