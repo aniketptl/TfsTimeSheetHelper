@@ -1,6 +1,9 @@
 # TFS Timesheet Helper
 TFS Timesheet helper is small tool which helps to generate CSV based timesheet which can be used to submit Timesheet where OTL (Oracle Time Labour)
 
+![Alt text](/tfstimesheet.png?raw=true "Optional Title")
+
+
 ### Save Settings
 > Saves URL and Username 
 
