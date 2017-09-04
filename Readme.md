@@ -15,7 +15,7 @@ In order to make this work you might need to change the field name according to 
 > Add all your task related project code in this 
 
 ### Changed by
-> When this is changed , this gives all the defects that you might have looked at spent some time .
+> When this is chcked , this gives all the defects that you might have looked at spent some time .
   Useful for leads and functional consultants
 
 ### Todos
