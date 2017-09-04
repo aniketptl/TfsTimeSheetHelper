@@ -19,10 +19,15 @@ namespace TfsTimeSheetHelper
 
         DateTime date;
 
-        String defectQuery = "Select[State], [Title] " +
-                             "From WorkItems " +
-                             "Where [Resolved by] = @Me AND [Resolved Date]> @Today-15 " +
-                             "Order By [Resolved Date] Asc";
+        String defectQuery      = "Select[State], [Title] " +
+                                  "From WorkItems " +
+                                  "Where [Resolved by] = @Me AND [Resolved Date]> @Today-6 " +
+                                  "Order By [Resolved Date] Asc";
+
+        String changedDateQuery = "Select[State], [Title] " +
+                                  "From WorkItems " +
+                                  "Where [Changed by] = @Me AND [Changed Date]> @Today-6 " +
+                                  "Order By [Changed Date] Asc";
 
         public TfsTimeSheetForm()
         {
@@ -40,8 +45,17 @@ namespace TfsTimeSheetHelper
 
                 tpc.EnsureAuthenticated();
 
-                WorkItemStore     workItemStore = (WorkItemStore)tpc.GetService(typeof(WorkItemStore));
-                WorkItemCollection queryResults = workItemStore.Query(defectQuery);
+                WorkItemStore      workItemStore = (WorkItemStore)tpc.GetService(typeof(WorkItemStore));
+                WorkItemCollection queryResults;
+
+                if (changedByRd.Checked)
+                {
+                    queryResults = workItemStore.Query(changedDateQuery);
+                }
+                else
+                {
+                    queryResults = workItemStore.Query(defectQuery);
+                }
 
                 addCSVPre();
 
@@ -88,12 +102,15 @@ namespace TfsTimeSheetHelper
                 {
                     foreach (KeyValuePair<String,float> defectHourList in defectHour)
                     {
-                        csvExport.Append("187117,01.10,Normal -IN,");
+                        //Project String Format Reference
+                        //187117,01.10,Normal -IN,
+                    
+                        csvExport.Append(projectNumBox.Text.Trim() + "," + taskBox.Text.Trim() + "," + typeBox.Text.Trim()+",");
 
                         String defectNumber = defectHourList.Key.ToString();
                         float  hour = 8;
 
-                        if (chkBoxDeveloperEst.Checked)
+                        if (developerEstimateRd.Checked)
                         {
                             if (defectHourList.Value == 0)
                             {
@@ -216,6 +233,11 @@ namespace TfsTimeSheetHelper
             saveSettings();
         }
 
+        private void TfsTimeSheetForm_Load(object sender, EventArgs e)
+        {
+
+        }
+
         public void initSettings()
         {
             try
@@ -231,8 +253,15 @@ namespace TfsTimeSheetHelper
 
         public void saveSettings()
         {
+            //User
             Properties.Settings.Default.userName = UserNameBox.Text;
             Properties.Settings.Default.tfsURL = TfsURIBox.Text;
+
+            //Project/Task/Type
+            Properties.Settings.Default.projectNumber = projectNumBox.Text;
+            Properties.Settings.Default.taskId = taskBox.Text;
+            Properties.Settings.Default.type = typeBox.Text;
+
             Properties.Settings.Default.Save();
         }
     }

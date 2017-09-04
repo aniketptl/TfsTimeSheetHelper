@@ -46,5 +46,41 @@ namespace TfsTimeSheetHelper.Properties {
                 this["tfsURL"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string projectNumber {
+            get {
+                return ((string)(this["projectNumber"]));
+            }
+            set {
+                this["projectNumber"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string taskId {
+            get {
+                return ((string)(this["taskId"]));
+            }
+            set {
+                this["taskId"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string type {
+            get {
+                return ((string)(this["type"]));
+            }
+            set {
+                this["type"] = value;
+            }
+        }
     }
 }
