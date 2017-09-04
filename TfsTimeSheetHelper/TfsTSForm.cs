@@ -102,8 +102,6 @@ namespace TfsTimeSheetHelper
                 {
                     foreach (KeyValuePair<String,float> defectHourList in defectHour)
                     {
-                        //187117,01.10,Normal -IN,
-                    
                         csvExport.Append(projectNumBox.Text.Trim() + "," + taskBox.Text.Trim() + "," + typeBox.Text.Trim()+",");
 
                         String defectNumber = defectHourList.Key.ToString();
