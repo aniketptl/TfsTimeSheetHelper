@@ -13,7 +13,7 @@ In order to make this work you might need to change the field name according to 
 
 ### Todos
 
- - Add Add basic task chooser
+ - Add basic task chooser
 
 License
 ----
