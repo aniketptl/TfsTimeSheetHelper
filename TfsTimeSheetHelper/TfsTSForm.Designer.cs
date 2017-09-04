@@ -226,7 +226,6 @@
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "TfsTimeSheetForm";
             this.Text = "TFS Time Sheet Helper";
-            this.Load += new System.EventHandler(this.TfsTimeSheetForm_Load);
             this.ResumeLayout(false);
             this.PerformLayout();
 

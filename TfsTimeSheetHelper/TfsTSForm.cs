@@ -232,11 +232,6 @@ namespace TfsTimeSheetHelper
             saveSettings();
         }
 
-        private void TfsTimeSheetForm_Load(object sender, EventArgs e)
-        {
-
-        }
-
         public void initSettings()
         {
             try
