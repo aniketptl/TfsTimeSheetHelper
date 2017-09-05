@@ -21,7 +21,8 @@ In order to make this work you might need to change the field name according to 
 ### Todos
 
  - ~~Add basic task chooser~~
- - Add proper messages and loading animation
+ - ~~Add proper messages and loading animation~~
+ - Optimize program and progress bar algorithm
 
 License
 ----
