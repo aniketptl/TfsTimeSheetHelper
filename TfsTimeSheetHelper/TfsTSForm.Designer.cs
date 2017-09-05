@@ -48,6 +48,7 @@
             this.parameterLbl = new System.Windows.Forms.Label();
             this.progressBar = new System.Windows.Forms.ProgressBar();
             this.backgroundWorker = new System.ComponentModel.BackgroundWorker();
+            this.noneRd = new System.Windows.Forms.RadioButton();
             this.SuspendLayout();
             // 
             // UserNameBox
@@ -122,7 +123,7 @@
             // developerEstimateRd
             // 
             this.developerEstimateRd.AutoSize = true;
-            this.developerEstimateRd.Location = new System.Drawing.Point(12, 287);
+            this.developerEstimateRd.Location = new System.Drawing.Point(228, 287);
             this.developerEstimateRd.Name = "developerEstimateRd";
             this.developerEstimateRd.Size = new System.Drawing.Size(152, 21);
             this.developerEstimateRd.TabIndex = 11;
@@ -133,7 +134,7 @@
             // changedByRd
             // 
             this.changedByRd.AutoSize = true;
-            this.changedByRd.Location = new System.Drawing.Point(179, 287);
+            this.changedByRd.Location = new System.Drawing.Point(101, 287);
             this.changedByRd.Name = "changedByRd";
             this.changedByRd.Size = new System.Drawing.Size(106, 21);
             this.changedByRd.TabIndex = 12;
@@ -211,6 +212,17 @@
             this.backgroundWorker.DoWork += new System.ComponentModel.DoWorkEventHandler(this.backgroundWorker_DoWork);
             this.backgroundWorker.ProgressChanged += new System.ComponentModel.ProgressChangedEventHandler(this.backgroundWorker_ProgressChanged);
             // 
+            // noneRd
+            // 
+            this.noneRd.AutoSize = true;
+            this.noneRd.Location = new System.Drawing.Point(15, 287);
+            this.noneRd.Name = "noneRd";
+            this.noneRd.Size = new System.Drawing.Size(63, 21);
+            this.noneRd.TabIndex = 21;
+            this.noneRd.TabStop = true;
+            this.noneRd.Text = "None";
+            this.noneRd.UseVisualStyleBackColor = true;
+            // 
             // TfsTimeSheetForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
@@ -218,6 +230,7 @@
             this.AutoSize = true;
             this.BackColor = System.Drawing.SystemColors.Control;
             this.ClientSize = new System.Drawing.Size(546, 412);
+            this.Controls.Add(this.noneRd);
             this.Controls.Add(this.progressBar);
             this.Controls.Add(this.parameterLbl);
             this.Controls.Add(this.typeLbl);
@@ -268,6 +281,7 @@
         private System.Windows.Forms.Label parameterLbl;
         private System.Windows.Forms.ProgressBar progressBar;
         private System.ComponentModel.BackgroundWorker backgroundWorker;
+        private System.Windows.Forms.RadioButton noneRd;
     }
 }
 

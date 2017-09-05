@@ -34,6 +34,7 @@ namespace TfsTimeSheetHelper
         {
             InitializeComponent();
             initSettings();
+            noneRd.Checked = true;
         }
 
         private void btnGenCSV_Click(object sender, EventArgs e)
@@ -80,6 +81,8 @@ namespace TfsTimeSheetHelper
             File.Delete(desktopPath);
 
             File.AppendAllText(desktopPath, csvExport.ToString());
+
+            setProgress(100);
 
             MessageBox.Show("File Written to Desktop", "TFS TimeSheet Helper", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
@@ -207,7 +210,7 @@ namespace TfsTimeSheetHelper
             {
                 defectHour = resItem.Value;
                 
-                if (progressPercentage <= 100)
+                if (progressPercentage <= 90)
                 {
                     setProgress((loopItr2 / dayDefectTemplate.Count)*100);
                 }
