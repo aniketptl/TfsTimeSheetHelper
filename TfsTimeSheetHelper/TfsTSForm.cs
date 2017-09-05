@@ -17,8 +17,9 @@ namespace TfsTimeSheetHelper
         String day, emptyPattern = ",,", emptylast = ",";
         StringBuilder csvExport  = new StringBuilder();
 
-        DateTime date;
-        int progressPercentage;
+        DateTime           date;
+        int                progressPercentage;
+        WorkItemCollection queryResults;
 
         String defectQuery      = "Select[State], [Title] " +
                                   "From WorkItems " +
@@ -145,7 +146,6 @@ namespace TfsTimeSheetHelper
                 setProgress(10);
 
                 WorkItemStore workItemStore = (WorkItemStore)tpc.GetService(typeof(WorkItemStore));
-                WorkItemCollection queryResults;
 
                 setProgress(20);
 
@@ -166,7 +166,7 @@ namespace TfsTimeSheetHelper
                 {                    
                     if (progressPercentage <= 70)
                     {
-                        setProgress((loopItr / queryResults.Count)*40);
+                        setProgress((loopItr / queryResults.Count)*40,true);
                     }
 
                     date = Convert.ToDateTime(item["Resolved Date"]);
@@ -210,15 +210,15 @@ namespace TfsTimeSheetHelper
             {
                 defectHour = resItem.Value;
                 
-                if (progressPercentage <= 90)
-                {
-                    setProgress((loopItr2 / dayDefectTemplate.Count)*100);
-                }
-
                 if (defectHour != null)
                 {
                     foreach (KeyValuePair<String, float> defectHourList in defectHour)
                     {
+                        if (progressPercentage <= 90)
+                        {
+                            setProgress((loopItr2 / queryResults.Count) * 20, true);
+                        }
+
                         csvExport.Append(projectNumBox.Text.Trim() + "," + taskBox.Text.Trim() + "," + typeBox.Text.Trim() + ",");
 
                         String defectNumber = defectHourList.Key.ToString();
@@ -263,19 +263,28 @@ namespace TfsTimeSheetHelper
                             addSuffix((int)Enum.Parse(typeof(DayOfWeek), resItem.Key, true));
                             csvExport.Append(Environment.NewLine);
                         }
+
+                        loopItr2++;
                     }
                 }
 
-                loopItr2++;
             }
 
             addCSVPost();
             exportFile();
         }
 
-        private void setProgress(int i)
+        private void setProgress(int i,Boolean add=false)
         {
-            progressPercentage = i;
+            if(add)
+            {
+                progressPercentage = progressPercentage+i;
+            }
+            else
+            {
+                progressPercentage = i;
+            }
+           
             backgroundWorker.ReportProgress(progressPercentage);
         }
 
