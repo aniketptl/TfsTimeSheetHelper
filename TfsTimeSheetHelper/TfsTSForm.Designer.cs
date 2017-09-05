@@ -46,6 +46,8 @@
             this.taskIdLbl = new System.Windows.Forms.Label();
             this.typeLbl = new System.Windows.Forms.Label();
             this.parameterLbl = new System.Windows.Forms.Label();
+            this.progressBar = new System.Windows.Forms.ProgressBar();
+            this.backgroundWorker = new System.ComponentModel.BackgroundWorker();
             this.SuspendLayout();
             // 
             // UserNameBox
@@ -72,7 +74,7 @@
             // 
             // btnGenCSV
             // 
-            this.btnGenCSV.Location = new System.Drawing.Point(11, 329);
+            this.btnGenCSV.Location = new System.Drawing.Point(11, 363);
             this.btnGenCSV.Name = "btnGenCSV";
             this.btnGenCSV.Size = new System.Drawing.Size(246, 37);
             this.btnGenCSV.TabIndex = 3;
@@ -82,7 +84,7 @@
             // 
             // btnSaveSettings
             // 
-            this.btnSaveSettings.Location = new System.Drawing.Point(289, 329);
+            this.btnSaveSettings.Location = new System.Drawing.Point(289, 363);
             this.btnSaveSettings.Name = "btnSaveSettings";
             this.btnSaveSettings.Size = new System.Drawing.Size(244, 37);
             this.btnSaveSettings.TabIndex = 4;
@@ -196,13 +198,27 @@
             this.parameterLbl.TabIndex = 19;
             this.parameterLbl.Text = "Parameters";
             // 
+            // progressBar
+            // 
+            this.progressBar.Location = new System.Drawing.Point(11, 325);
+            this.progressBar.Name = "progressBar";
+            this.progressBar.Size = new System.Drawing.Size(522, 23);
+            this.progressBar.TabIndex = 20;
+            // 
+            // backgroundWorker
+            // 
+            this.backgroundWorker.WorkerReportsProgress = true;
+            this.backgroundWorker.DoWork += new System.ComponentModel.DoWorkEventHandler(this.backgroundWorker_DoWork);
+            this.backgroundWorker.ProgressChanged += new System.ComponentModel.ProgressChangedEventHandler(this.backgroundWorker_ProgressChanged);
+            // 
             // TfsTimeSheetForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoSize = true;
             this.BackColor = System.Drawing.SystemColors.Control;
-            this.ClientSize = new System.Drawing.Size(546, 383);
+            this.ClientSize = new System.Drawing.Size(546, 412);
+            this.Controls.Add(this.progressBar);
             this.Controls.Add(this.parameterLbl);
             this.Controls.Add(this.typeLbl);
             this.Controls.Add(this.taskIdLbl);
@@ -250,6 +266,8 @@
         private System.Windows.Forms.Label taskIdLbl;
         private System.Windows.Forms.Label typeLbl;
         private System.Windows.Forms.Label parameterLbl;
+        private System.Windows.Forms.ProgressBar progressBar;
+        private System.ComponentModel.BackgroundWorker backgroundWorker;
     }
 }
 
