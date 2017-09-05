@@ -94,6 +94,8 @@ namespace TfsTimeSheetHelper
             dayDefectTemplate.Add("Wednesday", null);
             dayDefectTemplate.Add("Thursday", null);
             dayDefectTemplate.Add("Friay", null);
+
+            csvExport.Clear();
         }
 
         public void addCSVPre()
