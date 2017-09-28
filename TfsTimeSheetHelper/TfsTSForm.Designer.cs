@@ -65,6 +65,7 @@
             this.PasswordBox.PasswordChar = '*';
             this.PasswordBox.Size = new System.Drawing.Size(521, 22);
             this.PasswordBox.TabIndex = 1;
+            this.PasswordBox.TextChanged += new System.EventHandler(this.PasswordBox_TextChanged);
             // 
             // TfsURIBox
             // 
@@ -123,7 +124,7 @@
             // developerEstimateRd
             // 
             this.developerEstimateRd.AutoSize = true;
-            this.developerEstimateRd.Location = new System.Drawing.Point(228, 287);
+            this.developerEstimateRd.Location = new System.Drawing.Point(203, 287);
             this.developerEstimateRd.Name = "developerEstimateRd";
             this.developerEstimateRd.Size = new System.Drawing.Size(152, 21);
             this.developerEstimateRd.TabIndex = 11;
@@ -134,7 +135,7 @@
             // changedByRd
             // 
             this.changedByRd.AutoSize = true;
-            this.changedByRd.Location = new System.Drawing.Point(101, 287);
+            this.changedByRd.Location = new System.Drawing.Point(88, 287);
             this.changedByRd.Name = "changedByRd";
             this.changedByRd.Size = new System.Drawing.Size(106, 21);
             this.changedByRd.TabIndex = 12;
@@ -162,6 +163,7 @@
             this.typeBox.Name = "typeBox";
             this.typeBox.Size = new System.Drawing.Size(149, 22);
             this.typeBox.TabIndex = 15;
+            this.typeBox.TextChanged += new System.EventHandler(this.typeBox_TextChanged);
             // 
             // projectIdLbl
             // 

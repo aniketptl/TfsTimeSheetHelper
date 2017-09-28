@@ -28,7 +28,7 @@ namespace TfsTimeSheetHelper
 
         String changedDateQuery = "Select[State], [Title] " +
                                   "From WorkItems " +
-                                  "Where [Changed by] = @Me AND [Changed Date]> @Today-6 " +
+                                  "Where [Changed by] Ever @Me AND [Changed Date]> @Today-6" +
                                   "Order By [Changed Date] Asc";
 
         public TfsTimeSheetForm()
@@ -141,6 +141,10 @@ namespace TfsTimeSheetHelper
                 NetworkCredential credential = new NetworkCredential(UserNameBox.Text, PasswordBox.Text);
                 TfsTeamProjectCollection tpc = new TfsTeamProjectCollection(new Uri(TfsURIBox.Text), credential);
 
+                var versionControl = tpc.GetService<Microsoft.TeamFoundation.VersionControl.Client.VersionControlServer>();
+
+                var name = versionControl.AuthenticatedUser;
+
                 tpc.EnsureAuthenticated();
 
                 setProgress(10);
@@ -162,6 +166,7 @@ namespace TfsTimeSheetHelper
 
                 int loopItr = 1;
 
+                //Put All items
                 foreach (WorkItem item in queryResults)
                 {                    
                     if (progressPercentage <= 70)
@@ -169,7 +174,22 @@ namespace TfsTimeSheetHelper
                         setProgress((loopItr / queryResults.Count)*40,true);
                     }
 
-                    date = Convert.ToDateTime(item["Resolved Date"]);
+                    if(changedByRd.Checked)
+                    {
+                        if(checkRevisions(item,name) == null)
+                        {
+                            continue;
+                        }
+                        else
+                        {
+                            date = checkRevisions(item,name) ?? DateTime.MinValue;
+                        }
+                    }
+                    else
+                    {
+                        date = Convert.ToDateTime(item["Resolved Date"]);
+                    }
+                    
                     day = date.DayOfWeek.ToString();
 
                     int intDayWeek = (int)date.DayOfWeek;
@@ -206,6 +226,7 @@ namespace TfsTimeSheetHelper
 
             int loopItr2 = 1;
 
+            //Add hours 
             foreach (KeyValuePair<String, Dictionary<string, float>> resItem in dayDefectTemplate)
             {
                 defectHour = resItem.Value;
@@ -274,6 +295,27 @@ namespace TfsTimeSheetHelper
             exportFile();
         }
 
+        private Nullable<DateTime> checkRevisions(WorkItem item,String userDisplayName)
+        {
+
+            foreach (Revision rev in item.Revisions)
+            {
+                string changedBy = (string)rev.Fields["Changed By"].Value;
+
+                if (changedBy == userDisplayName)
+                {
+                    DateTime changedDate = (DateTime)rev.Fields["Changed Date"].Value;
+
+                    if ((DateTime.Today.AddDays(-6) <= changedDate && changedDate <= DateTime.Today))
+                    {
+                        return changedDate;
+                    }
+                }
+            }
+
+            return null;
+        }
+
         private void setProgress(int i,Boolean add=false)
         {
             if(add)
@@ -291,6 +333,16 @@ namespace TfsTimeSheetHelper
         private void backgroundWorker_ProgressChanged(object sender, System.ComponentModel.ProgressChangedEventArgs e)
         {
             progressBar.Value = e.ProgressPercentage;
+        }
+
+        private void typeBox_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void PasswordBox_TextChanged(object sender, EventArgs e)
+        {
+
         }
 
         public void initSettings()
