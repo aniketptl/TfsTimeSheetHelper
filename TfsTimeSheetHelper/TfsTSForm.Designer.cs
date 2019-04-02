@@ -28,7 +28,6 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(TfsTimeSheetForm));
             this.UserNameBox = new System.Windows.Forms.TextBox();
             this.PasswordBox = new System.Windows.Forms.TextBox();
             this.TfsURIBox = new System.Windows.Forms.TextBox();
@@ -37,7 +36,6 @@
             this.lblUsername = new System.Windows.Forms.Label();
             this.lblPassword = new System.Windows.Forms.Label();
             this.lblTFSUrl = new System.Windows.Forms.Label();
-            this.developerEstimateRd = new System.Windows.Forms.RadioButton();
             this.changedByRd = new System.Windows.Forms.RadioButton();
             this.projectNumBox = new System.Windows.Forms.TextBox();
             this.taskBox = new System.Windows.Forms.TextBox();
@@ -49,6 +47,8 @@
             this.progressBar = new System.Windows.Forms.ProgressBar();
             this.backgroundWorker = new System.ComponentModel.BackgroundWorker();
             this.noneRd = new System.Windows.Forms.RadioButton();
+            this.developerEstimateChk = new System.Windows.Forms.CheckBox();
+            this.label1 = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // UserNameBox
@@ -65,7 +65,6 @@
             this.PasswordBox.PasswordChar = '*';
             this.PasswordBox.Size = new System.Drawing.Size(521, 22);
             this.PasswordBox.TabIndex = 1;
-            this.PasswordBox.TextChanged += new System.EventHandler(this.PasswordBox_TextChanged);
             // 
             // TfsURIBox
             // 
@@ -76,12 +75,14 @@
             // 
             // btnGenCSV
             // 
+            this.btnGenCSV.BackColor = System.Drawing.SystemColors.ControlLight;
+            this.btnGenCSV.ForeColor = System.Drawing.Color.Black;
             this.btnGenCSV.Location = new System.Drawing.Point(11, 363);
             this.btnGenCSV.Name = "btnGenCSV";
             this.btnGenCSV.Size = new System.Drawing.Size(246, 37);
             this.btnGenCSV.TabIndex = 3;
-            this.btnGenCSV.Text = "Generate CSV";
-            this.btnGenCSV.UseVisualStyleBackColor = true;
+            this.btnGenCSV.Text = "Generate Excel";
+            this.btnGenCSV.UseVisualStyleBackColor = false;
             this.btnGenCSV.Click += new System.EventHandler(this.btnGenCSV_Click);
             // 
             // btnSaveSettings
@@ -121,21 +122,10 @@
             this.lblTFSUrl.TabIndex = 7;
             this.lblTFSUrl.Text = "TFS URL";
             // 
-            // developerEstimateRd
-            // 
-            this.developerEstimateRd.AutoSize = true;
-            this.developerEstimateRd.Location = new System.Drawing.Point(203, 287);
-            this.developerEstimateRd.Name = "developerEstimateRd";
-            this.developerEstimateRd.Size = new System.Drawing.Size(152, 21);
-            this.developerEstimateRd.TabIndex = 11;
-            this.developerEstimateRd.TabStop = true;
-            this.developerEstimateRd.Text = "Developer Estimate";
-            this.developerEstimateRd.UseVisualStyleBackColor = true;
-            // 
             // changedByRd
             // 
             this.changedByRd.AutoSize = true;
-            this.changedByRd.Location = new System.Drawing.Point(88, 287);
+            this.changedByRd.Location = new System.Drawing.Point(129, 287);
             this.changedByRd.Name = "changedByRd";
             this.changedByRd.Size = new System.Drawing.Size(106, 21);
             this.changedByRd.TabIndex = 12;
@@ -163,7 +153,6 @@
             this.typeBox.Name = "typeBox";
             this.typeBox.Size = new System.Drawing.Size(149, 22);
             this.typeBox.TabIndex = 15;
-            this.typeBox.TextChanged += new System.EventHandler(this.typeBox_TextChanged);
             // 
             // projectIdLbl
             // 
@@ -197,9 +186,9 @@
             this.parameterLbl.AutoSize = true;
             this.parameterLbl.Location = new System.Drawing.Point(12, 260);
             this.parameterLbl.Name = "parameterLbl";
-            this.parameterLbl.Size = new System.Drawing.Size(81, 17);
+            this.parameterLbl.Size = new System.Drawing.Size(129, 17);
             this.parameterLbl.TabIndex = 19;
-            this.parameterLbl.Text = "Parameters";
+            this.parameterLbl.Text = "General Parameter";
             // 
             // progressBar
             // 
@@ -219,11 +208,30 @@
             this.noneRd.AutoSize = true;
             this.noneRd.Location = new System.Drawing.Point(15, 287);
             this.noneRd.Name = "noneRd";
-            this.noneRd.Size = new System.Drawing.Size(63, 21);
+            this.noneRd.Size = new System.Drawing.Size(108, 21);
             this.noneRd.TabIndex = 21;
             this.noneRd.TabStop = true;
-            this.noneRd.Text = "None";
+            this.noneRd.Text = "Resolved By";
             this.noneRd.UseVisualStyleBackColor = true;
+            // 
+            // developerEstimateChk
+            // 
+            this.developerEstimateChk.AutoSize = true;
+            this.developerEstimateChk.Location = new System.Drawing.Point(380, 287);
+            this.developerEstimateChk.Name = "developerEstimateChk";
+            this.developerEstimateChk.Size = new System.Drawing.Size(153, 21);
+            this.developerEstimateChk.TabIndex = 22;
+            this.developerEstimateChk.Text = "Developer Estimate";
+            this.developerEstimateChk.UseVisualStyleBackColor = true;
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(377, 260);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(109, 17);
+            this.label1.TabIndex = 23;
+            this.label1.Text = "Hour Parameter";
             // 
             // TfsTimeSheetForm
             // 
@@ -232,6 +240,8 @@
             this.AutoSize = true;
             this.BackColor = System.Drawing.SystemColors.Control;
             this.ClientSize = new System.Drawing.Size(546, 412);
+            this.Controls.Add(this.label1);
+            this.Controls.Add(this.developerEstimateChk);
             this.Controls.Add(this.noneRd);
             this.Controls.Add(this.progressBar);
             this.Controls.Add(this.parameterLbl);
@@ -242,7 +252,6 @@
             this.Controls.Add(this.taskBox);
             this.Controls.Add(this.projectNumBox);
             this.Controls.Add(this.changedByRd);
-            this.Controls.Add(this.developerEstimateRd);
             this.Controls.Add(this.lblTFSUrl);
             this.Controls.Add(this.lblPassword);
             this.Controls.Add(this.lblUsername);
@@ -254,7 +263,6 @@
             this.Cursor = System.Windows.Forms.Cursors.Arrow;
             this.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
-            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "TfsTimeSheetForm";
             this.Text = "TFS Time Sheet Helper";
             this.ResumeLayout(false);
@@ -272,7 +280,6 @@
         private System.Windows.Forms.Label lblUsername;
         private System.Windows.Forms.Label lblPassword;
         private System.Windows.Forms.Label lblTFSUrl;
-        private System.Windows.Forms.RadioButton developerEstimateRd;
         private System.Windows.Forms.RadioButton changedByRd;
         private System.Windows.Forms.TextBox projectNumBox;
         private System.Windows.Forms.TextBox taskBox;
@@ -284,6 +291,8 @@
         private System.Windows.Forms.ProgressBar progressBar;
         private System.ComponentModel.BackgroundWorker backgroundWorker;
         private System.Windows.Forms.RadioButton noneRd;
+        private System.Windows.Forms.CheckBox developerEstimateChk;
+        private System.Windows.Forms.Label label1;
     }
 }
 

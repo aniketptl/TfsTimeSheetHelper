@@ -388,3 +388,17 @@ C:\Users\patimani\documents\visual studio 2017\Projects\TfsTimeSheetHelper\TfsTi
 C:\Users\patimani\documents\visual studio 2017\Projects\TfsTimeSheetHelper\TfsTimeSheetHelper\obj\Release\TfsTimeSheetHelper.application
 C:\Users\patimani\documents\visual studio 2017\Projects\TfsTimeSheetHelper\TfsTimeSheetHelper\obj\Release\TfsTimeSheetHelper.exe
 C:\Users\patimani\documents\visual studio 2017\Projects\TfsTimeSheetHelper\TfsTimeSheetHelper\obj\Release\TfsTimeSheetHelper.pdb
+C:\Users\patimani\Documents\Visual Studio 2017\Projects\TfsTimeSheetHelper\TfsTimeSheetHelper\bin\Release\Microsoft.IdentityModel.Clients.ActiveDirectory.dll
+C:\Users\patimani\Documents\Visual Studio 2017\Projects\TfsTimeSheetHelper\TfsTimeSheetHelper\bin\Release\Microsoft.IdentityModel.Clients.ActiveDirectory.Platform.dll
+C:\Users\patimani\Documents\Visual Studio 2017\Projects\TfsTimeSheetHelper\TfsTimeSheetHelper\bin\Release\Microsoft.ServiceBus.dll
+C:\Users\patimani\Documents\Visual Studio 2017\Projects\TfsTimeSheetHelper\TfsTimeSheetHelper\bin\Release\Microsoft.TeamFoundation.DistributedTask.Common.Contracts.dll
+C:\Users\patimani\Documents\Visual Studio 2017\Projects\TfsTimeSheetHelper\TfsTimeSheetHelper\bin\Release\System.IdentityModel.Tokens.Jwt.dll
+C:\Users\patimani\Documents\Visual Studio 2017\Projects\TfsTimeSheetHelper\TfsTimeSheetHelper\bin\Release\System.Web.Http.dll
+C:\Users\patimani\Documents\Visual Studio 2017\Projects\TfsTimeSheetHelper\TfsTimeSheetHelper\bin\Release\Microsoft.IdentityModel.Clients.ActiveDirectory.xml
+C:\Users\patimani\Documents\Visual Studio 2017\Projects\TfsTimeSheetHelper\TfsTimeSheetHelper\bin\Release\Microsoft.IdentityModel.Clients.ActiveDirectory.Platform.xml
+C:\Users\patimani\Documents\Visual Studio 2017\Projects\TfsTimeSheetHelper\TfsTimeSheetHelper\bin\Release\Microsoft.ServiceBus.xml
+C:\Users\patimani\Documents\Visual Studio 2017\Projects\TfsTimeSheetHelper\TfsTimeSheetHelper\bin\Release\Microsoft.TeamFoundation.DistributedTask.Common.Contracts.xml
+C:\Users\patimani\Documents\Visual Studio 2017\Projects\TfsTimeSheetHelper\TfsTimeSheetHelper\bin\Release\System.IdentityModel.Tokens.Jwt.pdb
+C:\Users\patimani\Documents\Visual Studio 2017\Projects\TfsTimeSheetHelper\TfsTimeSheetHelper\bin\Release\System.IdentityModel.Tokens.Jwt.xml
+C:\Users\patimani\Documents\Visual Studio 2017\Projects\TfsTimeSheetHelper\TfsTimeSheetHelper\bin\Release\System.Web.Http.xml
+C:\Users\patimani\Documents\Visual Studio 2017\Projects\TfsTimeSheetHelper\TfsTimeSheetHelper\obj\Release\TfsTimeSheetHelper.csproj.CoreCompileInputs.cache

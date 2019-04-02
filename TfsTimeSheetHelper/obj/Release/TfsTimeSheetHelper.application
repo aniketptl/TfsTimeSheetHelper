@@ -7,14 +7,14 @@
     <framework targetVersion="4.5" profile="Full" supportedRuntime="4.0.30319" />
   </compatibleFrameworks>
   <dependency>
-    <dependentAssembly dependencyType="install" codebase="TfsTimeSheetHelper.exe.manifest" size="259582">
+    <dependentAssembly dependencyType="install" codebase="TfsTimeSheetHelper.exe.manifest" size="263965">
       <assemblyIdentity name="TfsTimeSheetHelper.exe" version="1.0.0.3" publicKeyToken="0000000000000000" language="neutral" processorArchitecture="msil" type="win32" />
       <hash>
         <dsig:Transforms>
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-        <dsig:DigestValue>KgxSb9PTF4+Q0+9c4Xemnoo+2rO1ip0YmDM9H+xqwh0=</dsig:DigestValue>
+        <dsig:DigestValue>MUSYmPWL8rN1Ixo7Mst5uJvtkO70zP8dqMJYwjJ2iXU=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>

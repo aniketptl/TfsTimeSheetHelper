@@ -4,17 +4,17 @@
   <description asmv2:publisher="TfsTimeSheetHelper" asmv2:product="TfsTimeSheetHelper" xmlns="urn:schemas-microsoft-com:asm.v1" />
   <deployment install="true" mapFileExtensions="true" />
   <compatibleFrameworks xmlns="urn:schemas-microsoft-com:clickonce.v2">
-    <framework targetVersion="4.5" profile="Full" supportedRuntime="4.0.30319" />
+    <framework targetVersion="4.6" profile="Full" supportedRuntime="4.0.30319" />
   </compatibleFrameworks>
   <dependency>
-    <dependentAssembly dependencyType="install" codebase="TfsTimeSheetHelper.exe.manifest" size="263965">
+    <dependentAssembly dependencyType="install" codebase="TfsTimeSheetHelper.exe.manifest" size="276064">
       <assemblyIdentity name="TfsTimeSheetHelper.exe" version="1.0.0.3" publicKeyToken="0000000000000000" language="neutral" processorArchitecture="msil" type="win32" />
       <hash>
         <dsig:Transforms>
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-        <dsig:DigestValue>jB4mQLu6nhZCL418DP29Af5YAJDP0IjxtA3PzsbFoPE=</dsig:DigestValue>
+        <dsig:DigestValue>7JAn5WyqB9Pab0J3A5MBWzIcUtNWsllJtGQW67GO5LY=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>

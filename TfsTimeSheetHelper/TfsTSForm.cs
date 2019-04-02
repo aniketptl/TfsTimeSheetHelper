@@ -1,41 +1,99 @@
-﻿using System.Windows.Forms;
+﻿using System;
+using System.Net;
+using System.Collections.Generic;
+using System.Windows.Forms;
 using Microsoft.TeamFoundation.Client;
 using Microsoft.TeamFoundation.WorkItemTracking.Client;
-using System.Net;
-using System.Text;
-using System.IO;
-using System.Collections.Generic;
-using System;
+using DocumentFormat.OpenXml;
+using TopSoft.ExcelExport;
+using DocumentFormat.OpenXml.Packaging;
+using TopSoft.ExcelExport.Styles;
+using System.Reflection;
 
 namespace TfsTimeSheetHelper
 {
     public partial class TfsTimeSheetForm : Form
     {
+        public static int                             progressPercentage;
         Dictionary<String, Dictionary<String, float>> dayDefectTemplate = new Dictionary<String, Dictionary<String, float>>();
-        Dictionary<String, float> defectHour = new Dictionary<string, float>();
+        Dictionary<String, float>                     defectHour        = new Dictionary<string, float>();
+        DateTime                                      date;
+        WorkItemCollection                            queryResults;
+        List<String>                                  daysList      = new List<String>();
+        List<TimesheetExcel>                          timesheetList = new List<TimesheetExcel>();
 
-        String day, emptyPattern = ",,", emptylast = ",";
-        StringBuilder csvExport  = new StringBuilder();
-
-        DateTime           date;
-        int                progressPercentage;
-        WorkItemCollection queryResults;
-
-        String defectQuery      = "Select[State], [Title] " +
+        String defectQuery      = "Select * " +
                                   "From WorkItems " +
                                   "Where [Resolved by] = @Me AND [Resolved Date]> @Today-6 " +
                                   "Order By [Resolved Date] Asc";
 
-        String changedDateQuery = "Select[State], [Title] " +
+        String changedDateQuery = "Select * " +
                                   "From WorkItems " +
-                                  "Where [Changed by] Ever @Me AND [Changed Date]> @Today-6" +
+                                  "Where [Changed by] Ever @Me AND [Changed Date]> @Today-6 " +
                                   "Order By [Changed Date] Asc";
 
         public TfsTimeSheetForm()
         {
             InitializeComponent();
             initSettings();
-            noneRd.Checked = true;
+        }
+
+        public void buildEmptyCollection()
+        {
+            dayDefectTemplate.Clear();
+            timesheetList.Clear();
+
+            dayDefectTemplate.Add("Monday", null);
+            dayDefectTemplate.Add("Tuesday", null);
+            dayDefectTemplate.Add("Wednesday", null);
+            dayDefectTemplate.Add("Thursday", null);
+            dayDefectTemplate.Add("Friday", null);
+
+            daysList.Add("Monday");
+            daysList.Add("Tuesday");
+            daysList.Add("Wednesday");
+            daysList.Add("Thursday");
+            daysList.Add("Friday");
+
+            this.buildExcelTitle();
+        }
+
+        public void buildExcelTitle()
+        {
+            timesheetList.Add(new TimesheetExcel() {Project = "Project",
+                                                    ProjectName = "Project name",
+                                                    TaskNumber = "Task number",
+                                                    TaskName = "Task name",
+                                                    Type = "Type",
+                                                    Monday = "Monday",
+                                                    Comment1 = "Comment1",
+                                                    Timefrom1 = "Time from1",
+                                                    Timeto1 = "Time to1",
+                                                    Tuesday = "Tuesday",
+                                                    Comment2 = "Comment2",
+                                                    Timefrom2 = "Time from2",
+                                                    Timeto2 = "Time to2",
+                                                    Wednesday = "Wednesday",
+                                                    Comment3 = "Comment3",
+                                                    Timefrom3 = "Time from3",
+                                                    Timeto3 = "Time to3",
+                                                    Thursday = "Thursday",
+                                                    Comment4 = "Comment4",
+                                                    Timefrom4 = "Time from4",
+                                                    Timeto4 = "Time to4",
+                                                    Friday = "Friday",
+                                                    Comment5 = "Comment5",
+                                                    Timefrom5 = "Time from5",
+                                                    Timeto5 = "Time to5",
+                                                    Saturday = "Saturday",
+                                                    Comment6 = "Comment6",
+                                                    Timefrom6 = "Time from6",
+                                                    Timeto6 = "Time to6",
+                                                    Sunday = "Sunday",
+                                                    Comment7 = "Comment7",
+                                                    Timefrom7 = "Time from7",
+                                                    Timeto7 = "Time to7"
+                                                    });
         }
 
         private void btnGenCSV_Click(object sender, EventArgs e)
@@ -52,83 +110,6 @@ namespace TfsTimeSheetHelper
             }
         }
 
-        public void addPrefix(int intDayWeek)
-        {
-            for (int i = 1; i < intDayWeek; i++)
-            {
-                csvExport.Append(emptyPattern);
-            }
-        }
-
-        public void addSuffix(int intDayWeek)
-        {
-            for (int i = intDayWeek; i < 5; i++)
-            {
-                if (i == 4)
-                {
-                    csvExport.Append(emptylast);
-                }
-                else
-                {
-                    csvExport.Append(emptyPattern);
-                }
-            }
-        }
-
-        public void exportFile()
-        {
-            String desktopPath = Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + "\\TfsTimeSheet.csv";
-
-            File.Delete(desktopPath);
-
-            File.AppendAllText(desktopPath, csvExport.ToString());
-
-            setProgress(100);
-
-            MessageBox.Show("File Written to Desktop", "TFS TimeSheet Helper", MessageBoxButtons.OK, MessageBoxIcon.Information);
-        }
-
-
-        public void buildEmptyCollection()
-        {
-            dayDefectTemplate.Clear();
-
-            dayDefectTemplate.Add("Monday", null);
-            dayDefectTemplate.Add("Tuesday", null);
-            dayDefectTemplate.Add("Wednesday", null);
-            dayDefectTemplate.Add("Thursday", null);
-            dayDefectTemplate.Add("Friay", null);
-
-            csvExport.Clear();
-        }
-
-        public void addCSVPre()
-        {
-            csvExport.AppendLine("START_HEADER");
-            csvExport.AppendLine("Overriding Approver,,,,,,,,,,,,,,,,,");
-            csvExport.AppendLine("Comments,,,,,,,,,,,,,,,,,");
-            csvExport.AppendLine("STOP_HEADER");
-            csvExport.AppendLine(",,,,,,,,,,,,,,,,,");
-
-            csvExport.AppendLine("START_TEMPLATE");
-            csvExport.AppendLine("Project,Task,Type,Mon,CommentText,Tue,CommentText,Wed,CommentText,Thu,CommentText,Fri,CommentText,Sat,CommentText,Sun,CommentText,END_COLUMN");
-        }
-
-        public void addCSVPost()
-        {
-            csvExport.AppendLine("STOP_TEMPLATE");
-            csvExport.AppendLine("ORACLE RESERVED SECTION");
-            csvExport.AppendLine(",,,,,,,,,,,,,,,,,");
-            csvExport.AppendLine("START_ORACLE");
-
-            csvExport.AppendLine("A|PROJECTS|Attribute1|A|PROJECTS|Attribute2|AE|PROJECTS|Attribute3|PROJECTS|Attribute5|D|DI|CommentText|D|DI|CommentText|D|DI|CommentText|D|DI|Comm");
-            csvExport.AppendLine("entText|D|DI|CommentText|D|DI|CommentText|D|DI|CommentText|,,,,,,,,,,,,,,,,,");
-
-            csvExport.AppendLine("2121472,,,,,,,,,,,,,,,,,");
-            csvExport.AppendLine("A|APPROVAL|Attribute10|DI|CommentText|,,,,,,,,,,,,,,,,,");
-            csvExport.AppendLine("STOP_ORACLE,END");
-        }
-
         private void btnSaveSettings_Click(object sender, EventArgs e)
         {
             saveSettings();
@@ -138,18 +119,16 @@ namespace TfsTimeSheetHelper
         {
             try
             {
-                NetworkCredential credential = new NetworkCredential(UserNameBox.Text, PasswordBox.Text);
-                TfsTeamProjectCollection tpc = new TfsTeamProjectCollection(new Uri(TfsURIBox.Text), credential);
-
-                var versionControl = tpc.GetService<Microsoft.TeamFoundation.VersionControl.Client.VersionControlServer>();
-
-                var name = versionControl.AuthenticatedUser;
+                NetworkCredential        credential     = new NetworkCredential(UserNameBox.Text, PasswordBox.Text);
+                TfsTeamProjectCollection tpc            = new TfsTeamProjectCollection(new Uri(TfsURIBox.Text), credential);
+                var                      versionControl = tpc.GetService<Microsoft.TeamFoundation.VersionControl.Client.VersionControlServer>();
+                var                      name           = versionControl.AuthenticatedUser;
 
                 tpc.EnsureAuthenticated();
 
                 setProgress(10);
 
-                WorkItemStore workItemStore = (WorkItemStore)tpc.GetService(typeof(WorkItemStore));
+                WorkItemStore   workItemStore = (WorkItemStore)tpc.GetService(typeof(WorkItemStore));
 
                 setProgress(20);
 
@@ -162,16 +141,16 @@ namespace TfsTimeSheetHelper
                     queryResults = workItemStore.Query(defectQuery);
                 }
 
-                addCSVPre();
-
                 int loopItr = 1;
 
                 //Put All items
                 foreach (WorkItem item in queryResults)
-                {                    
+                {
+                    string defectTitleNumber = item.Id + " : " + item.Title + " [" + item.CreatedBy + "] ";
+
                     if (progressPercentage <= 70)
                     {
-                        setProgress((loopItr / queryResults.Count)*40,true);
+                        setProgress((loopItr / queryResults.Count) * 40, true);
                     }
 
                     if(changedByRd.Checked)
@@ -190,27 +169,20 @@ namespace TfsTimeSheetHelper
                         date = Convert.ToDateTime(item["Resolved Date"]);
                     }
                     
-                    day = date.DayOfWeek.ToString();
-
-                    int intDayWeek = (int)date.DayOfWeek;
-                    float estimated = 0;
-
-                    if (item["Development Estimate"] != null)
-                    {
-                        estimated = (float)Convert.ToDecimal(item["Development Estimate"]);
-                    }
+                    String  day        = date.DayOfWeek.ToString();
+                    int     intDayWeek = (int)date.DayOfWeek;
+                    float   estimated  = 0;
 
                     if (dayDefectTemplate.ContainsKey(date.DayOfWeek.ToString()) && dayDefectTemplate[day] != null)
                     {
                         defectHour = dayDefectTemplate[day];
-                        defectHour.Add(item.Id.ToString(), estimated);
-
+                        defectHour.Add(defectTitleNumber, estimated);
                         dayDefectTemplate[day] = defectHour;
                     }
                     else
                     {
                         defectHour = new Dictionary<string, float>();
-                        defectHour.Add(item.Id.ToString(), estimated);
+                        defectHour.Add(defectTitleNumber, estimated);
                         dayDefectTemplate[day] = defectHour;
                     }
 
@@ -226,13 +198,14 @@ namespace TfsTimeSheetHelper
 
             int loopItr2 = 1;
 
-            //Add hours 
+            // Loop Day Wise
             foreach (KeyValuePair<String, Dictionary<string, float>> resItem in dayDefectTemplate)
             {
                 defectHour = resItem.Value;
-                
+
                 if (defectHour != null)
                 {
+                    // Loop Defect Wise
                     foreach (KeyValuePair<String, float> defectHourList in defectHour)
                     {
                         if (progressPercentage <= 90)
@@ -240,49 +213,52 @@ namespace TfsTimeSheetHelper
                             setProgress((loopItr2 / queryResults.Count) * 20, true);
                         }
 
-                        csvExport.Append(projectNumBox.Text.Trim() + "," + taskBox.Text.Trim() + "," + typeBox.Text.Trim() + ",");
-
                         String defectNumber = defectHourList.Key.ToString();
-                        float hour = 8;
+                        float  hour         = 8;
 
-                        if (developerEstimateRd.Checked)
+                        if (developerEstimateChk.Checked)
                         {
                             if (defectHourList.Value == 0)
                             {
                                 hour = hour / defectHour.Count;
 
-                                addPrefix((int)Enum.Parse(typeof(DayOfWeek), resItem.Key, true));
-                                csvExport.Append(hour.ToString() + "," + defectNumber + ",");
-                                addSuffix((int)Enum.Parse(typeof(DayOfWeek), resItem.Key, true));
-                                csvExport.Append(Environment.NewLine);
+                                timesheetList.Add(this.createRow(resItem.Key, defectNumber, hour.ToString(), projectNumBox.Text, taskBox.Text, typeBox.Text));
                             }
                             else
                             {
-                                hour = (float)defectHourList.Value;
+                                hour = (float) defectHourList.Value;
 
-                                int daysDivide = (int)(hour / 8);
+                                int daysDivide, indexDay = 0;
+
+                                if (hour % 8 == 0)
+                                {
+                                    daysDivide = (int)(hour / 8);
+                                }
+                                else
+                                {
+                                    daysDivide = 1;
+                                }
 
                                 hour = hour / daysDivide;
 
-                                addPrefix((int)Enum.Parse(typeof(DayOfWeek), resItem.Key, true));
-
+                                if (daysList.Contains(resItem.Key))
+                                {
+                                    indexDay = daysList.IndexOf(resItem.Key);
+                                }
+                                
                                 for (int i = 0; i < daysDivide; i++)
                                 {
-                                    csvExport.Append(hour.ToString() + "," + defectNumber + ",");
-                                }
+                                   timesheetList.Add(this.createRow(daysList[indexDay], defectNumber, hour.ToString(), projectNumBox.Text, taskBox.Text, typeBox.Text));
 
-                                addSuffix((int)Enum.Parse(typeof(DayOfWeek), resItem.Key, true));
-                                csvExport.Append(Environment.NewLine);
+                                   indexDay++;
+                                }
                             }
                         }
                         else
                         {
                             hour = hour / defectHour.Count;
 
-                            addPrefix((int)Enum.Parse(typeof(DayOfWeek), resItem.Key, true));
-                            csvExport.Append(hour.ToString() + "," + defectNumber + ",");
-                            addSuffix((int)Enum.Parse(typeof(DayOfWeek), resItem.Key, true));
-                            csvExport.Append(Environment.NewLine);
+                            timesheetList.Add(this.createRow(resItem.Key, defectNumber, hour.ToString(), projectNumBox.Text, taskBox.Text, typeBox.Text));
                         }
 
                         loopItr2++;
@@ -291,22 +267,20 @@ namespace TfsTimeSheetHelper
 
             }
 
-            addCSVPost();
-            exportFile();
+            this.exportExcel();
         }
 
         private Nullable<DateTime> checkRevisions(WorkItem item,String userDisplayName)
         {
-
             foreach (Revision rev in item.Revisions)
             {
-                string changedBy = (string)rev.Fields["Changed By"].Value;
+                string changedBy = (string) rev.Fields["Changed By"].Value;
 
                 if (changedBy == userDisplayName)
                 {
                     DateTime changedDate = (DateTime)rev.Fields["Changed Date"].Value;
 
-                    if ((DateTime.Today.AddDays(-6) <= changedDate && changedDate <= DateTime.Today))
+                    if ((DateTime.Today.AddDays(-2) <= changedDate && changedDate <= DateTime.Today))
                     {
                         return changedDate;
                     }
@@ -335,17 +309,101 @@ namespace TfsTimeSheetHelper
             progressBar.Value = e.ProgressPercentage;
         }
 
-        private void typeBox_TextChanged(object sender, EventArgs e)
+        public  void exportExcel()
         {
+            String fileName = string.Format("Timesheet-{0:yyyy-MM-dd_hh-mm-ss-tt}.xlsx", DateTime.Now);
 
+            using (SpreadsheetDocument spreadsheetDocument = SpreadsheetDocument.Create(@"C:\Users\patimani\Desktop\"+ fileName, SpreadsheetDocumentType.Workbook))
+            {
+                var  excelExportContext = new ExportContext(spreadsheetDocument);
+                uint rowNo = 0;
+
+                foreach (var timesheetExcel in timesheetList)
+                {
+                    rowNo++;
+
+                    excelExportContext.RenderEntity(timesheetExcel, rowNo);
+                }
+
+                excelExportContext.SaveChanges();
+            }
+
+            setProgress(100);
         }
 
-        private void PasswordBox_TextChanged(object sender, EventArgs e)
+        public TimesheetExcel  createRow(string _day,                                     
+                                         string _comment,
+                                         string _hours,
+                                         string _project,
+                                         string _task,
+                                         string _type,
+                                         string _projectName = "",
+                                         string _taskName = ""
+                                        )
         {
+            TimesheetExcel timesheetExcel = new TimesheetExcel();
 
+            switch (_day)
+            {
+                case "Monday":
+
+                    timesheetExcel.Monday      = _hours;
+                    timesheetExcel.Project     = _project;
+                    timesheetExcel.ProjectName = _projectName;
+                    timesheetExcel.TaskNumber  = _task;
+                    timesheetExcel.TaskName    = _taskName;
+                    timesheetExcel.Type        = _type;
+                    timesheetExcel.Comment1    = _comment;
+                    break;
+
+                case "Tuesday":
+
+                    timesheetExcel.Tuesday     = _hours;
+                    timesheetExcel.Project     = _project;
+                    timesheetExcel.ProjectName = _projectName;
+                    timesheetExcel.TaskNumber  = _task;
+                    timesheetExcel.TaskName    = _taskName;
+                    timesheetExcel.Type        = _type;
+                    timesheetExcel.Comment2    = _comment;
+                    break;
+
+                case "Wednesday":
+
+                    timesheetExcel.Wednesday   = _hours;
+                    timesheetExcel.Project     = _project;
+                    timesheetExcel.ProjectName = _projectName;
+                    timesheetExcel.TaskNumber  = _task;
+                    timesheetExcel.TaskName    = _taskName;
+                    timesheetExcel.Type        = _type;
+                    timesheetExcel.Comment3    = _comment;
+                    break;
+
+                case "Thursday":
+
+                    timesheetExcel.Thursday    = _hours;
+                    timesheetExcel.Project     = _project;
+                    timesheetExcel.ProjectName = _projectName;
+                    timesheetExcel.TaskNumber  = _task;
+                    timesheetExcel.TaskName    = _taskName;
+                    timesheetExcel.Type        = _type;
+                    timesheetExcel.Comment4    = _comment;
+                    break;
+
+                case "Friday":
+
+                    timesheetExcel.Friday      = _hours;
+                    timesheetExcel.Project     = _project;
+                    timesheetExcel.ProjectName = _projectName;
+                    timesheetExcel.TaskNumber  = _task;
+                    timesheetExcel.TaskName    = _taskName;
+                    timesheetExcel.Type        = _type;
+                    timesheetExcel.Comment5    = _comment;
+                    break;
+            }
+
+            return timesheetExcel;
         }
-
-        public void initSettings()
+        public  void initSettings()
         {
             try
             {
@@ -357,21 +415,19 @@ namespace TfsTimeSheetHelper
             }
             catch (System.Configuration.SettingsPropertyNotFoundException)
             {
+                // If no property found set default link
                 TfsURIBox.Text = "http://sefoxdev136:8080/tfs/SE_FOX/";
             }
+
+            noneRd.Checked = true;
         }
-
-        public void saveSettings()
+        public  void saveSettings()
         {
-            //User
-            Properties.Settings.Default.userName = UserNameBox.Text;
-            Properties.Settings.Default.tfsURL = TfsURIBox.Text;
-
-            //Project/Task/Type
+            Properties.Settings.Default.userName      = UserNameBox.Text;
+            Properties.Settings.Default.tfsURL        = TfsURIBox.Text;
             Properties.Settings.Default.projectNumber = projectNumBox.Text;
-            Properties.Settings.Default.taskId = taskBox.Text;
-            Properties.Settings.Default.type = typeBox.Text;
-
+            Properties.Settings.Default.taskId        = taskBox.Text;
+            Properties.Settings.Default.type          = typeBox.Text;
             Properties.Settings.Default.Save();
         }
     }

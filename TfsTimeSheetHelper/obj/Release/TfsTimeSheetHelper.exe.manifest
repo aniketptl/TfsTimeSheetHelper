@@ -43,6 +43,42 @@
     </dependentAssembly>
   </dependency>
   <dependency>
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="Microsoft.IdentityModel.Clients.ActiveDirectory.dll" size="203552">
+      <assemblyIdentity name="Microsoft.IdentityModel.Clients.ActiveDirectory" version="3.13.5.907" publicKeyToken="31BF3856AD364E35" language="neutral" processorArchitecture="msil" />
+      <hash>
+        <dsig:Transforms>
+          <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
+        </dsig:Transforms>
+        <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
+        <dsig:DigestValue>JrwkPXKfOpk2UNktI2xbx9Zg7VHfMWfK9sUlBT07Edo=</dsig:DigestValue>
+      </hash>
+    </dependentAssembly>
+  </dependency>
+  <dependency>
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="Microsoft.IdentityModel.Clients.ActiveDirectory.Platform.dll" size="89912">
+      <assemblyIdentity name="Microsoft.IdentityModel.Clients.ActiveDirectory.Platform" version="3.13.5.907" publicKeyToken="31BF3856AD364E35" language="neutral" processorArchitecture="msil" />
+      <hash>
+        <dsig:Transforms>
+          <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
+        </dsig:Transforms>
+        <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
+        <dsig:DigestValue>f9XF1fWHJQXc4k+eNFO+/yFO4W2AouqV/tq7++CBzDc=</dsig:DigestValue>
+      </hash>
+    </dependentAssembly>
+  </dependency>
+  <dependency>
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="Microsoft.ServiceBus.dll" size="3504400">
+      <assemblyIdentity name="Microsoft.ServiceBus" version="3.0.0.0" publicKeyToken="31BF3856AD364E35" language="neutral" processorArchitecture="msil" />
+      <hash>
+        <dsig:Transforms>
+          <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
+        </dsig:Transforms>
+        <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
+        <dsig:DigestValue>qLAc29rFe9EO8gX7m4afHv/cXORmVwIuvG9bS6P2qKI=</dsig:DigestValue>
+      </hash>
+    </dependentAssembly>
+  </dependency>
+  <dependency>
     <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="Microsoft.TeamFoundation.Build.Client.dll" size="570136">
       <assemblyIdentity name="Microsoft.TeamFoundation.Build.Client" version="15.0.0.0" publicKeyToken="B03F5F7F11D50A3A" language="neutral" processorArchitecture="msil" />
       <hash>
@@ -1227,6 +1263,18 @@
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
         <dsig:DigestValue>OrCWDxE1j7cwYCux4Zb7cJzC2kVt9GUXGqGjlfpR/Z8=</dsig:DigestValue>
+      </hash>
+    </dependentAssembly>
+  </dependency>
+  <dependency>
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="Microsoft.TeamFoundation.DistributedTask.Common.Contracts.dll" size="29552">
+      <assemblyIdentity name="Microsoft.TeamFoundation.DistributedTask.Common.Contracts" version="15.0.0.0" publicKeyToken="B03F5F7F11D50A3A" language="neutral" processorArchitecture="msil" />
+      <hash>
+        <dsig:Transforms>
+          <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
+        </dsig:Transforms>
+        <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
+        <dsig:DigestValue>OeQ5SGTFa2Hv3NJd9V+8VVU4R2dbS28jPxVZRExv3aI=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>
@@ -4063,6 +4111,18 @@
     </dependentAssembly>
   </dependency>
   <dependency>
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="System.IdentityModel.Tokens.Jwt.dll" size="136448">
+      <assemblyIdentity name="System.IdentityModel.Tokens.Jwt" version="4.0.20622.1351" publicKeyToken="31BF3856AD364E35" language="neutral" processorArchitecture="msil" />
+      <hash>
+        <dsig:Transforms>
+          <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
+        </dsig:Transforms>
+        <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
+        <dsig:DigestValue>RJtCMdzL6NIE9YelGS94N2HPfwRfVDMU5WtAt87+V2w=</dsig:DigestValue>
+      </hash>
+    </dependentAssembly>
+  </dependency>
+  <dependency>
     <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="System.Net.Http.Formatting.dll" size="185032">
       <assemblyIdentity name="System.Net.Http.Formatting" version="5.2.2.0" publicKeyToken="31BF3856AD364E35" language="neutral" processorArchitecture="msil" />
       <hash>
@@ -4087,14 +4147,26 @@
     </dependentAssembly>
   </dependency>
   <dependency>
-    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="TfsTimeSheetHelper.exe" size="427944">
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="System.Web.Http.dll" size="471240">
+      <assemblyIdentity name="System.Web.Http" version="5.2.2.0" publicKeyToken="31BF3856AD364E35" language="neutral" processorArchitecture="msil" />
+      <hash>
+        <dsig:Transforms>
+          <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
+        </dsig:Transforms>
+        <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
+        <dsig:DigestValue>FmbkduZTKzEU8KG4zTukMwUvBCKa/vBA15q4FW8c7uI=</dsig:DigestValue>
+      </hash>
+    </dependentAssembly>
+  </dependency>
+  <dependency>
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="TfsTimeSheetHelper.exe" size="428968">
       <assemblyIdentity name="TfsTimeSheetHelper" version="1.0.0.0" language="neutral" processorArchitecture="msil" />
       <hash>
         <dsig:Transforms>
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-        <dsig:DigestValue>LdiPTyJDa3L94bLvpIowmrGHWISNCXPahnJnwX4q8yU=</dsig:DigestValue>
+        <dsig:DigestValue>juMj1cWPLIzFVMwLVAHZj56qSMtTMtC1NrYD9KRTRIg=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>
@@ -4107,13 +4179,13 @@
       <dsig:DigestValue>82/X99GJLDL8AmvhiqLGqYmnItIK+YVwGLxVnN9YlWE=</dsig:DigestValue>
     </hash>
   </file>
-  <file name="TfsTimeSheetHelper.exe.config" size="4046">
+  <file name="TfsTimeSheetHelper.exe.config" size="7680">
     <hash>
       <dsig:Transforms>
         <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
       </dsig:Transforms>
       <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-      <dsig:DigestValue>lMzrd04d7nJZJFUjI/9/RZ54Ik2SBIyvPpe4NgdWVOI=</dsig:DigestValue>
+      <dsig:DigestValue>79r28PzzmaF56ShEgWJiFVJCsKOtwT5gt0j8HGHkB/E=</dsig:DigestValue>
     </hash>
   </file>
 </asmv1:assembly>
