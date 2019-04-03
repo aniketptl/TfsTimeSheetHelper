@@ -8,29 +8,19 @@ using DocumentFormat.OpenXml;
 using TopSoft.ExcelExport;
 using DocumentFormat.OpenXml.Packaging;
 using TopSoft.ExcelExport.Styles;
-using System.Reflection;
 
 namespace TfsTimeSheetHelper
 {
     public partial class TfsTimeSheetForm : Form
     {
-        public static int                             progressPercentage;
-        Dictionary<String, Dictionary<String, float>> dayDefectTemplate = new Dictionary<String, Dictionary<String, float>>();
-        Dictionary<String, float>                     defectHour        = new Dictionary<string, float>();
-        DateTime                                      date;
-        WorkItemCollection                            queryResults;
-        List<String>                                  daysList      = new List<String>();
-        List<TimesheetExcel>                          timesheetList = new List<TimesheetExcel>();
-
-        String defectQuery      = "Select * " +
-                                  "From WorkItems " +
-                                  "Where [Resolved by] = @Me AND [Resolved Date]> @Today-6 " +
-                                  "Order By [Resolved Date] Asc";
-
-        String changedDateQuery = "Select * " +
-                                  "From WorkItems " +
-                                  "Where [Changed by] Ever @Me AND [Changed Date]> @Today-6 " +
-                                  "Order By [Changed Date] Asc";
+        public static int                               progressPercentage;
+        Dictionary<String, Dictionary<WorkItem, float>> dayDefectTemplate = new Dictionary<String, Dictionary<WorkItem, float>>();
+        Dictionary<WorkItem, float>                     defectHour        = new Dictionary<WorkItem, float>();
+        DateTime                                        date;
+        WorkItemCollection                              queryResults;
+        List<String>                                    daysList      = new List<String>();
+        List<TimesheetExcel>                            timesheetList = new List<TimesheetExcel>();
+        int                                             numTillStartWeek;
 
         public TfsTimeSheetForm()
         {
@@ -54,6 +44,8 @@ namespace TfsTimeSheetHelper
             daysList.Add("Wednesday");
             daysList.Add("Thursday");
             daysList.Add("Friday");
+
+            processText.Text = "";
 
             this.buildExcelTitle();
         }
@@ -124,13 +116,27 @@ namespace TfsTimeSheetHelper
                 var                      versionControl = tpc.GetService<Microsoft.TeamFoundation.VersionControl.Client.VersionControlServer>();
                 var                      name           = versionControl.AuthenticatedUser;
 
+                numTillStartWeek        = (DateTime.Now.Date - DateTime.Now.FirstDayOfWeek().Date).Days;
+
+                String defectQuery      = "Select * " +
+                                          "From WorkItems " +
+                                          "Where [Resolved by] = @Me AND [Resolved Date]> @Today-" + numTillStartWeek + " " +
+                                          "Order By [Resolved Date] asc";
+
+                String changedDateQuery = "Select * " +
+                                          "From WorkItems " +
+                                          "Where [Changed by] Ever @Me AND [Changed Date]> @Today-" + numTillStartWeek + " " +
+                                          "Order By [Changed Date] asc";
+
                 tpc.EnsureAuthenticated();
 
                 setProgress(10);
+                this.setProcessText("Authenticated with TFS");
 
-                WorkItemStore   workItemStore = (WorkItemStore)tpc.GetService(typeof(WorkItemStore));
+                WorkItemStore   workItemStore = (WorkItemStore) tpc.GetService(typeof(WorkItemStore));
 
                 setProgress(20);
+                this.setProcessText("Querying result with TFS");
 
                 if (changedByRd.Checked)
                 {
@@ -143,17 +149,19 @@ namespace TfsTimeSheetHelper
 
                 int loopItr = 1;
 
+                this.setProcessText("Processing Data");
+
                 //Put All items
                 foreach (WorkItem item in queryResults)
                 {
-                    string defectTitleNumber = item.Id + " : " + item.Title + " [" + item.CreatedBy + "] ";
-
                     if (progressPercentage <= 70)
                     {
                         setProgress((loopItr / queryResults.Count) * 40, true);
                     }
 
-                    if(changedByRd.Checked)
+                    this.setProcessText("Processing : "+item.Type.Name+" "+item.Title);
+
+                    if (changedByRd.Checked)
                     {
                         if(checkRevisions(item,name) == null)
                         {
@@ -176,13 +184,13 @@ namespace TfsTimeSheetHelper
                     if (dayDefectTemplate.ContainsKey(date.DayOfWeek.ToString()) && dayDefectTemplate[day] != null)
                     {
                         defectHour = dayDefectTemplate[day];
-                        defectHour.Add(defectTitleNumber, estimated);
+                        defectHour.Add(item, estimated);
                         dayDefectTemplate[day] = defectHour;
                     }
                     else
                     {
-                        defectHour = new Dictionary<string, float>();
-                        defectHour.Add(defectTitleNumber, estimated);
+                        defectHour = new Dictionary<WorkItem, float>();
+                        defectHour.Add(item, estimated);
                         dayDefectTemplate[day] = defectHour;
                     }
 
@@ -198,23 +206,28 @@ namespace TfsTimeSheetHelper
 
             int loopItr2 = 1;
 
+            this.setProcessText("Parsing Data");
             // Loop Day Wise
-            foreach (KeyValuePair<String, Dictionary<string, float>> resItem in dayDefectTemplate)
+            foreach (KeyValuePair<String, Dictionary<WorkItem, float>> resItem in dayDefectTemplate)
             {
                 defectHour = resItem.Value;
 
                 if (defectHour != null)
                 {
                     // Loop Defect Wise
-                    foreach (KeyValuePair<String, float> defectHourList in defectHour)
+                    foreach (KeyValuePair<WorkItem, float> defectHourList in defectHour)
                     {
                         if (progressPercentage <= 90)
                         {
                             setProgress((loopItr2 / queryResults.Count) * 20, true);
                         }
 
-                        String defectNumber = defectHourList.Key.ToString();
-                        float  hour         = 8;
+                        WorkItem    workItem      = defectHourList.Key;
+                        String      defectNumber  = workItem.Type.Name + " " + workItem.Id + " : " + workItem.Title + " [" + workItem.CreatedBy + "] ";
+                        String      projectNumber = this.getCode(workItem.Type, "project");
+                        String      task          = this.getCode(workItem.Type, "task");
+                        String      type          = this.getCode(workItem.Type, "type");
+                        float       hour          = 8;
 
                         if (developerEstimateChk.Checked)
                         {
@@ -222,7 +235,7 @@ namespace TfsTimeSheetHelper
                             {
                                 hour = hour / defectHour.Count;
 
-                                timesheetList.Add(this.createRow(resItem.Key, defectNumber, hour.ToString(), projectNumBox.Text, taskBox.Text, typeBox.Text));
+                                timesheetList.Add(this.createRow(resItem.Key, defectNumber, hour.ToString(), projectNumber, task, type));
                             }
                             else
                             {
@@ -248,7 +261,7 @@ namespace TfsTimeSheetHelper
                                 
                                 for (int i = 0; i < daysDivide; i++)
                                 {
-                                   timesheetList.Add(this.createRow(daysList[indexDay], defectNumber, hour.ToString(), projectNumBox.Text, taskBox.Text, typeBox.Text));
+                                   timesheetList.Add(this.createRow(daysList[indexDay], defectNumber, hour.ToString(), projectNumber, task, type));
 
                                    indexDay++;
                                 }
@@ -258,7 +271,7 @@ namespace TfsTimeSheetHelper
                         {
                             hour = hour / defectHour.Count;
 
-                            timesheetList.Add(this.createRow(resItem.Key, defectNumber, hour.ToString(), projectNumBox.Text, taskBox.Text, typeBox.Text));
+                            timesheetList.Add(this.createRow(resItem.Key, defectNumber, hour.ToString(), projectNumber, task, type));
                         }
 
                         loopItr2++;
@@ -280,7 +293,7 @@ namespace TfsTimeSheetHelper
                 {
                     DateTime changedDate = (DateTime)rev.Fields["Changed Date"].Value;
 
-                    if ((DateTime.Today.AddDays(-2) <= changedDate && changedDate <= DateTime.Today))
+                    if ((DateTime.Today.AddDays(-numTillStartWeek) <= changedDate.Date && changedDate.Date <= DateTime.Today))
                     {
                         return changedDate;
                     }
@@ -300,7 +313,7 @@ namespace TfsTimeSheetHelper
             {
                 progressPercentage = i;
             }
-           
+
             backgroundWorker.ReportProgress(progressPercentage);
         }
 
@@ -311,9 +324,12 @@ namespace TfsTimeSheetHelper
 
         public  void exportExcel()
         {
-            String fileName = string.Format("Timesheet-{0:yyyy-MM-dd_hh-mm-ss-tt}.xlsx", DateTime.Now);
+            this.setProcessText("Exporting to Excel");
 
-            using (SpreadsheetDocument spreadsheetDocument = SpreadsheetDocument.Create(@"C:\Users\patimani\Desktop\"+ fileName, SpreadsheetDocumentType.Workbook))
+            String fileName = string.Format("Timesheet-{0:yyyy-MM-dd_hh-mm-ss-tt}.xlsx", DateTime.Now);
+            string path     = Environment.GetFolderPath(Environment.SpecialFolder.Desktop)+"\\";
+
+            using (SpreadsheetDocument spreadsheetDocument = SpreadsheetDocument.Create(@path + fileName, SpreadsheetDocumentType.Workbook))
             {
                 var  excelExportContext = new ExportContext(spreadsheetDocument);
                 uint rowNo = 0;
@@ -322,6 +338,43 @@ namespace TfsTimeSheetHelper
                 {
                     rowNo++;
 
+                    if(rowNo == 1)
+                    {
+                        timesheetExcel.MapStyle<TimesheetExcel>(x => x.Project, new CellFill(hexColor: "FCFCAE"));
+                        timesheetExcel.MapStyle<TimesheetExcel>(x => x.ProjectName, new CellFill(hexColor: "FCFCAE"));
+                        timesheetExcel.MapStyle<TimesheetExcel>(x => x.TaskNumber, new CellFill(hexColor: "FCFCAE"));
+                        timesheetExcel.MapStyle<TimesheetExcel>(x => x.TaskName, new CellFill(hexColor: "FCFCAE"));
+                        timesheetExcel.MapStyle<TimesheetExcel>(x => x.Type, new CellFill(hexColor: "FCFCAE"));
+                        timesheetExcel.MapStyle<TimesheetExcel>(x => x.Timefrom1, new CellFill(hexColor: "FCFCAE"));
+                        timesheetExcel.MapStyle<TimesheetExcel>(x => x.Timefrom2, new CellFill(hexColor: "FCFCAE"));
+                        timesheetExcel.MapStyle<TimesheetExcel>(x => x.Timefrom3, new CellFill(hexColor: "FCFCAE"));
+                        timesheetExcel.MapStyle<TimesheetExcel>(x => x.Timefrom4, new CellFill(hexColor: "FCFCAE"));
+                        timesheetExcel.MapStyle<TimesheetExcel>(x => x.Timefrom5, new CellFill(hexColor: "FCFCAE"));
+                        timesheetExcel.MapStyle<TimesheetExcel>(x => x.Timefrom6, new CellFill(hexColor: "FCFCAE"));
+                        timesheetExcel.MapStyle<TimesheetExcel>(x => x.Timefrom7, new CellFill(hexColor: "FCFCAE"));
+                        timesheetExcel.MapStyle<TimesheetExcel>(x => x.Timeto1, new CellFill(hexColor: "FCFCAE"));
+                        timesheetExcel.MapStyle<TimesheetExcel>(x => x.Timeto2, new CellFill(hexColor: "FCFCAE"));
+                        timesheetExcel.MapStyle<TimesheetExcel>(x => x.Timeto3, new CellFill(hexColor: "FCFCAE"));
+                        timesheetExcel.MapStyle<TimesheetExcel>(x => x.Timeto4, new CellFill(hexColor: "FCFCAE"));
+                        timesheetExcel.MapStyle<TimesheetExcel>(x => x.Timeto5, new CellFill(hexColor: "FCFCAE"));
+                        timesheetExcel.MapStyle<TimesheetExcel>(x => x.Timeto6, new CellFill(hexColor: "FCFCAE"));
+                        timesheetExcel.MapStyle<TimesheetExcel>(x => x.Timeto7, new CellFill(hexColor: "FCFCAE"));
+                        timesheetExcel.MapStyle<TimesheetExcel>(x => x.Saturday, new CellFill(hexColor: "FCFCAE"));
+                        timesheetExcel.MapStyle<TimesheetExcel>(x => x.Friday, new CellFill(hexColor: "FCFCAE"));
+                        timesheetExcel.MapStyle<TimesheetExcel>(x => x.Thursday, new CellFill(hexColor: "FCFCAE"));
+                        timesheetExcel.MapStyle<TimesheetExcel>(x => x.Wednesday, new CellFill(hexColor: "FCFCAE"));
+                        timesheetExcel.MapStyle<TimesheetExcel>(x => x.Tuesday, new CellFill(hexColor: "FCFCAE"));
+                        timesheetExcel.MapStyle<TimesheetExcel>(x => x.Monday, new CellFill(hexColor: "FCFCAE"));
+                        timesheetExcel.MapStyle<TimesheetExcel>(x => x.Sunday, new CellFill(hexColor: "FCFCAE"));
+                        timesheetExcel.MapStyle<TimesheetExcel>(x => x.Comment1, new CellFill(hexColor: "FCFCAE"));
+                        timesheetExcel.MapStyle<TimesheetExcel>(x => x.Comment2, new CellFill(hexColor: "FCFCAE"));
+                        timesheetExcel.MapStyle<TimesheetExcel>(x => x.Comment3, new CellFill(hexColor: "FCFCAE"));
+                        timesheetExcel.MapStyle<TimesheetExcel>(x => x.Comment4, new CellFill(hexColor: "FCFCAE"));
+                        timesheetExcel.MapStyle<TimesheetExcel>(x => x.Comment5, new CellFill(hexColor: "FCFCAE"));
+                        timesheetExcel.MapStyle<TimesheetExcel>(x => x.Comment6, new CellFill(hexColor: "FCFCAE"));
+                        timesheetExcel.MapStyle<TimesheetExcel>(x => x.Comment7, new CellFill(hexColor: "FCFCAE"));
+                    }
+
                     excelExportContext.RenderEntity(timesheetExcel, rowNo);
                 }
 
@@ -329,6 +382,8 @@ namespace TfsTimeSheetHelper
             }
 
             setProgress(100);
+
+            this.setProcessText("Finished Exporting File . Find it on Desktop "+ fileName);
         }
 
         public TimesheetExcel  createRow(string _day,                                     
@@ -403,15 +458,73 @@ namespace TfsTimeSheetHelper
 
             return timesheetExcel;
         }
+
+        public string  getCode(WorkItemType _type, string _fieldName)
+        {
+            switch (_type.Name)
+            {
+                case "Defect":
+
+                    switch (_fieldName)
+                    {
+                        case "project":
+                            return projectDefectNumBox.Text;
+
+                        case "task":
+                            return defectTaskBox.Text;
+
+                        case "type":
+                            return defectTypeBox.Text;
+                    }
+
+                    break;
+
+                case "Change Request":
+                case "Task":
+
+                    switch (_fieldName)
+                    {
+                        case "project":
+                            return crProjectNumBox.Text;
+
+                        case "task":
+                            return crTaskIdBox.Text;
+
+                        case "type":
+                            return crTypeBox.Text;
+                    }
+
+                    break;
+            }
+
+            return "";
+        }
+
+        public void setProcessText(string _txt)
+        {
+            processText.BeginInvoke(new MethodInvoker(() =>
+            {
+                processText.Text = _txt;
+            }));
+        }
+
         public  void initSettings()
         {
             try
             {
-                TfsURIBox.Text     = Properties.Settings.Default.tfsURL;
-                UserNameBox.Text   = Properties.Settings.Default.userName;
-                projectNumBox.Text = Properties.Settings.Default.projectNumber;
-                taskBox.Text       = Properties.Settings.Default.taskId;
-                typeBox.Text       = Properties.Settings.Default.type;
+                // TFS
+                TfsURIBox.Text           = Properties.Settings.Default.tfsURL;
+                UserNameBox.Text         = Properties.Settings.Default.userName;
+
+                // Defect
+                projectDefectNumBox.Text = Properties.Settings.Default.projectNumber;
+                defectTaskBox.Text       = Properties.Settings.Default.taskId;
+                defectTypeBox.Text       = Properties.Settings.Default.type;
+
+                // CR
+                crProjectNumBox.Text = Properties.Settings.Default.crProjectNumber;
+                crTaskIdBox.Text     = Properties.Settings.Default.crTaskId;
+                crTypeBox.Text       = Properties.Settings.Default.crType;
             }
             catch (System.Configuration.SettingsPropertyNotFoundException)
             {
@@ -421,14 +534,26 @@ namespace TfsTimeSheetHelper
 
             noneRd.Checked = true;
         }
+
         public  void saveSettings()
         {
+            // TFS
             Properties.Settings.Default.userName      = UserNameBox.Text;
             Properties.Settings.Default.tfsURL        = TfsURIBox.Text;
-            Properties.Settings.Default.projectNumber = projectNumBox.Text;
-            Properties.Settings.Default.taskId        = taskBox.Text;
-            Properties.Settings.Default.type          = typeBox.Text;
+
+            // Defect
+            Properties.Settings.Default.projectNumber = projectDefectNumBox.Text;
+            Properties.Settings.Default.taskId        = defectTaskBox.Text;
+            Properties.Settings.Default.type          = defectTypeBox.Text;
+
+            // CR
+            Properties.Settings.Default.crProjectNumber = crProjectNumBox.Text;
+            Properties.Settings.Default.crTaskId        = crTaskIdBox.Text;
+            Properties.Settings.Default.crType          = crTypeBox.Text;
+
             Properties.Settings.Default.Save();
+
+            processText.Text = "Settings Saved";
         }
     }
 }

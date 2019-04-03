@@ -82,5 +82,41 @@ namespace TfsTimeSheetHelper.Properties {
                 this["type"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string crProjectNumber {
+            get {
+                return ((string)(this["crProjectNumber"]));
+            }
+            set {
+                this["crProjectNumber"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string crTaskId {
+            get {
+                return ((string)(this["crTaskId"]));
+            }
+            set {
+                this["crTaskId"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string crType {
+            get {
+                return ((string)(this["crType"]));
+            }
+            set {
+                this["crType"] = value;
+            }
+        }
     }
 }
