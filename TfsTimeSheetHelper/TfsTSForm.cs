@@ -154,9 +154,12 @@ namespace TfsTimeSheetHelper
                 //Put All items
                 foreach (WorkItem item in queryResults)
                 {
-                    if (progressPercentage <= 70)
+                    if (progressPercentage <= 80)
                     {
-                        setProgress((loopItr / queryResults.Count) * 40, true);
+                        float progress      = (float) loopItr / queryResults.Count;
+                        int   progressInt   = (int) (progress * 50);
+
+                        setProgress(progressInt, true);
                     }
 
                     this.setProcessText("Processing : "+item.Type.Name+" "+item.Title);
@@ -169,29 +172,14 @@ namespace TfsTimeSheetHelper
                         }
                         else
                         {
-                            date = checkRevisions(item,name) ?? DateTime.MinValue;
+                            checkRevisions(item, name);
                         }
                     }
                     else
                     {
                         date = Convert.ToDateTime(item["Resolved Date"]);
-                    }
-                    
-                    String  day        = date.DayOfWeek.ToString();
-                    int     intDayWeek = (int)date.DayOfWeek;
-                    float   estimated  = 0;
 
-                    if (dayDefectTemplate.ContainsKey(date.DayOfWeek.ToString()) && dayDefectTemplate[day] != null)
-                    {
-                        defectHour = dayDefectTemplate[day];
-                        defectHour.Add(item, estimated);
-                        dayDefectTemplate[day] = defectHour;
-                    }
-                    else
-                    {
-                        defectHour = new Dictionary<WorkItem, float>();
-                        defectHour.Add(item, estimated);
-                        dayDefectTemplate[day] = defectHour;
+                        this.putDataIntoTemplate(item, date);
                     }
 
                     loopItr++;
@@ -283,19 +271,44 @@ namespace TfsTimeSheetHelper
             this.exportExcel();
         }
 
+        private void putDataIntoTemplate(WorkItem _item, DateTime _date)
+        {
+            String      day        = _date.DayOfWeek.ToString();
+            int         intDayWeek = (int)_date.DayOfWeek;
+            float       estimated  = 0;
+
+            if (dayDefectTemplate.ContainsKey(_date.DayOfWeek.ToString()) && dayDefectTemplate[day] != null)
+            {
+                defectHour = dayDefectTemplate[day];
+                defectHour.Add(_item, estimated);
+                dayDefectTemplate[day] = defectHour;
+            }
+            else
+            {
+                defectHour = new Dictionary<WorkItem, float>();
+                defectHour.Add(_item, estimated);
+                dayDefectTemplate[day] = defectHour;
+            }
+        }
+
         private Nullable<DateTime> checkRevisions(WorkItem item,String userDisplayName)
         {
+            DateTime prevChangeDate = default(DateTime);
+
             foreach (Revision rev in item.Revisions)
             {
                 string changedBy = (string) rev.Fields["Changed By"].Value;
 
                 if (changedBy == userDisplayName)
                 {
-                    DateTime changedDate = (DateTime)rev.Fields["Changed Date"].Value;
+                    DateTime changedDate = (DateTime) rev.Fields["Changed Date"].Value;
 
-                    if ((DateTime.Today.AddDays(-numTillStartWeek) <= changedDate.Date && changedDate.Date <= DateTime.Today))
+                    if ((DateTime.Today.AddDays(-numTillStartWeek) <= changedDate.Date && changedDate.Date <= DateTime.Today) && (changedDate.Date != prevChangeDate.Date))
                     {
-                        return changedDate;
+                        // Only check for 
+                        prevChangeDate = changedDate.Date;
+
+                        this.putDataIntoTemplate(item, changedDate);
                     }
                 }
             }
@@ -398,60 +411,41 @@ namespace TfsTimeSheetHelper
         {
             TimesheetExcel timesheetExcel = new TimesheetExcel();
 
+            timesheetExcel.Project     = _project;
+            timesheetExcel.ProjectName = _projectName;
+            timesheetExcel.TaskNumber  = _task;
+            timesheetExcel.TaskName    = _taskName;
+            timesheetExcel.Type        = _type;
+
             switch (_day)
             {
                 case "Monday":
 
                     timesheetExcel.Monday      = _hours;
-                    timesheetExcel.Project     = _project;
-                    timesheetExcel.ProjectName = _projectName;
-                    timesheetExcel.TaskNumber  = _task;
-                    timesheetExcel.TaskName    = _taskName;
-                    timesheetExcel.Type        = _type;
                     timesheetExcel.Comment1    = _comment;
                     break;
 
                 case "Tuesday":
 
                     timesheetExcel.Tuesday     = _hours;
-                    timesheetExcel.Project     = _project;
-                    timesheetExcel.ProjectName = _projectName;
-                    timesheetExcel.TaskNumber  = _task;
-                    timesheetExcel.TaskName    = _taskName;
-                    timesheetExcel.Type        = _type;
                     timesheetExcel.Comment2    = _comment;
                     break;
 
                 case "Wednesday":
 
                     timesheetExcel.Wednesday   = _hours;
-                    timesheetExcel.Project     = _project;
-                    timesheetExcel.ProjectName = _projectName;
-                    timesheetExcel.TaskNumber  = _task;
-                    timesheetExcel.TaskName    = _taskName;
-                    timesheetExcel.Type        = _type;
                     timesheetExcel.Comment3    = _comment;
                     break;
 
                 case "Thursday":
 
                     timesheetExcel.Thursday    = _hours;
-                    timesheetExcel.Project     = _project;
-                    timesheetExcel.ProjectName = _projectName;
-                    timesheetExcel.TaskNumber  = _task;
-                    timesheetExcel.TaskName    = _taskName;
-                    timesheetExcel.Type        = _type;
                     timesheetExcel.Comment4    = _comment;
                     break;
 
                 case "Friday":
 
                     timesheetExcel.Friday      = _hours;
-                    timesheetExcel.Project     = _project;
-                    timesheetExcel.ProjectName = _projectName;
-                    timesheetExcel.TaskNumber  = _task;
-                    timesheetExcel.TaskName    = _taskName;
-                    timesheetExcel.Type        = _type;
                     timesheetExcel.Comment5    = _comment;
                     break;
             }

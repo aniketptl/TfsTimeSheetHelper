@@ -83,6 +83,7 @@
             // btnGenCSV
             // 
             this.btnGenCSV.BackColor = System.Drawing.SystemColors.ControlLight;
+            this.btnGenCSV.FlatStyle = System.Windows.Forms.FlatStyle.System;
             this.btnGenCSV.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnGenCSV.ForeColor = System.Drawing.Color.Black;
             this.btnGenCSV.Location = new System.Drawing.Point(11, 480);
@@ -95,6 +96,7 @@
             // 
             // btnSaveSettings
             // 
+            this.btnSaveSettings.FlatStyle = System.Windows.Forms.FlatStyle.System;
             this.btnSaveSettings.Location = new System.Drawing.Point(351, 480);
             this.btnSaveSettings.Name = "btnSaveSettings";
             this.btnSaveSettings.Size = new System.Drawing.Size(244, 37);
@@ -231,6 +233,7 @@
             this.developerEstimateChk.TabIndex = 22;
             this.developerEstimateChk.Text = "Developer Estimate";
             this.developerEstimateChk.UseVisualStyleBackColor = true;
+            this.developerEstimateChk.Visible = false;
             // 
             // label1
             // 
@@ -240,6 +243,7 @@
             this.label1.Size = new System.Drawing.Size(109, 17);
             this.label1.TabIndex = 23;
             this.label1.Text = "Hour Parameter";
+            this.label1.Visible = false;
             // 
             // DefectCode
             // 
@@ -284,14 +288,13 @@
             // 
             // processText
             // 
-            this.processText.AutoSize = true;
             this.processText.BackColor = System.Drawing.Color.Transparent;
             this.processText.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.processText.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
             this.processText.Image = ((System.Drawing.Image)(resources.GetObject("processText.Image")));
-            this.processText.Location = new System.Drawing.Point(12, 449);
+            this.processText.Location = new System.Drawing.Point(12, 446);
             this.processText.Name = "processText";
-            this.processText.Size = new System.Drawing.Size(0, 17);
+            this.processText.Size = new System.Drawing.Size(581, 31);
             this.processText.TabIndex = 29;
             // 
             // TfsTimeSheetForm
@@ -330,7 +333,9 @@
             this.Cursor = System.Windows.Forms.Cursors.Arrow;
             this.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
+            this.MaximizeBox = false;
             this.Name = "TfsTimeSheetForm";
+            this.ShowIcon = false;
             this.Text = "TFS Time Sheet Helper";
             this.ResumeLayout(false);
             this.PerformLayout();
