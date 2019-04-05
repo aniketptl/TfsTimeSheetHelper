@@ -22,7 +22,10 @@ In order to make this work you might need to change the field name according to 
 
  - ~~Add basic task chooser~~
  - ~~Add proper messages and loading animation~~
- - Optimize program and progress bar algorithm
+ - ~~Optimize program and progress bar algorithm~~
+ 
+ ### Excel Based
+ Two versions are present one can export in CSV and one can export in Excel. Seperate branch for different functionality.
 
 License
 ----
